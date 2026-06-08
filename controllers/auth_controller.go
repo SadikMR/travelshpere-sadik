@@ -13,6 +13,8 @@ type AuthController struct {
 
 // LoginPage renders the login page.
 func (c *AuthController) LoginPage() {
+	// Don't use layout for login page
+	c.Layout = ""
 	c.TplName = "auth/login.tpl"
 }
 
@@ -21,18 +23,25 @@ func (c *AuthController) Login() {
 	username := strings.TrimSpace(c.GetString("username"))
 
 	if username == "" {
+		if c.Data == nil {
+			c.Data = make(map[interface{}]interface{})
+		}
 		c.Data["Error"] = "Username is required"
+		c.Layout = ""
 		c.TplName = "auth/login.tpl"
 		return
 	}
 
-	c.SetSession("username", username)
+	// Set cookie to store username
+	c.Ctx.SetCookie("username", username, 3600, "/")
 
+	// Redirect to home
 	c.Redirect("/", 302)
 }
 
 // Logout removes the current session.
 func (c *AuthController) Logout() {
-	c.DestroySession()
+	// Delete the username cookie
+	c.Ctx.SetCookie("username", "", -1, "/")
 	c.Redirect("/login", 302)
 }
