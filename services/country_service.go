@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/SadikMR/travelshpere-sadik/models"
@@ -45,6 +46,10 @@ func (s *CountryService) GetCountries(
 
 		countries = append(countries, country)
 	}
+
+	sort.Slice(countries, func(i, j int) bool {
+		return strings.ToLower(countries[i].Name) < strings.ToLower(countries[j].Name)
+	})
 
 	return countries, nil
 }

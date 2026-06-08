@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"net/http"
 
+	beego "github.com/beego/beego/v2/server/web"
+
 	"github.com/SadikMR/travelshpere-sadik/dto"
 )
 
-const baseURL = "https://restcountries.com/v3.1"
-
 // GetCountries retrieves all countries.
 func GetCountries() ([]dto.RestCountryDTO, error) {
+	baseURL, _ := beego.AppConfig.String("restcountriesBaseURL")
 	url := fmt.Sprintf(
-		"%s/all?fields=name,capital,currencies,languages,flags,latlng,region,population",
+		"%s/all?fields=name,capital,currencies,languages,flags,latlng,region,subregion,population",
 		baseURL,
 	)
 
@@ -34,8 +35,9 @@ func GetCountries() ([]dto.RestCountryDTO, error) {
 
 // GetCountryByName retrieves a country by name.
 func GetCountryByName(name string) ([]dto.RestCountryDTO, error) {
+	baseURL, _ := beego.AppConfig.String("restcountriesBaseURL")
 	url := fmt.Sprintf(
-		"%s/name/%s?fields=name,capital,currencies,languages,flags,latlng,region,population",
+		"%s/name/%s?fields=name,capital,currencies,languages,flags,latlng,region,subregion,population",
 		baseURL,
 		name,
 	)

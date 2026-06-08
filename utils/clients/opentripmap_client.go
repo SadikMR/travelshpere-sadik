@@ -23,8 +23,11 @@ func GetAttractions(
 			fmt.Errorf("opentrip api key missing")
 	}
 
+	opentripBaseURL, _ := beego.AppConfig.String("opentripBaseURL")
+
 	url := fmt.Sprintf(
-		"https://api.opentripmap.com/0.1/en/places/radius?radius=10000&lat=%f&lon=%f&kinds=museums,historic,architecture,monuments,cultural&apikey=%s",
+		"%s/radius?radius=10000&lat=%f&lon=%f&kinds=museums,historic,architecture,monuments,cultural&apikey=%s",
+		opentripBaseURL,
 		lat,
 		lon,
 		apiKey,

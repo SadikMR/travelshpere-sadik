@@ -4,20 +4,6 @@
   const data = window.__COUNTRY_DETAIL__;
   if (!data) return;
 
-  // ── Format population ──────────────────────────────────────
-  const popEl = document.getElementById("js-population");
-  if (popEl) {
-    const n = parseInt(popEl.dataset.pop, 10);
-    if (!isNaN(n)) {
-      let formatted;
-      if (n >= 1_000_000_000) formatted = (n / 1_000_000_000).toFixed(1) + "B";
-      else if (n >= 1_000_000) formatted = (n / 1_000_000).toFixed(1) + "M";
-      else if (n >= 1_000) formatted = (n / 1_000).toFixed(1) + "K";
-      else formatted = String(n);
-      popEl.textContent = formatted;
-    }
-  }
-
   // ── Render attractions ─────────────────────────────────────
   const listEl = document.getElementById("attractions-list");
   if (listEl && data.attractions && data.attractions.length > 0) {

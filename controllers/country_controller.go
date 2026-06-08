@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/SadikMR/travelshpere-sadik/services"
+	"github.com/SadikMR/travelshpere-sadik/utils/formatters"
 	"github.com/SadikMR/travelshpere-sadik/utils/validators"
 )
 
@@ -58,6 +59,9 @@ func (c *CountryController) Details() {
 	c.Data["Attractions"] = attractions
 	c.Data["IsWishlisted"] = false // update when wishlist service is ready
 	c.Data["Title"] = country.Name
+	c.Data["FormattedPopulation"] = formatters.FormatPopulation(country.Population)
+	c.Data["FormattedLanguages"] = formatters.FormatLanguages(country.Languages)
+	c.Data["FormattedCurrency"] = formatters.FormatCurrency(country.Currency)
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "destination.tpl"
 }

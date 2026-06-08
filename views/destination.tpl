@@ -31,8 +31,8 @@
 
       <div class="flex flex-col gap-1">
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Population</span>
-        <span class="text-sm font-medium text-gray-800" id="js-population" data-pop="{{.Country.Population}}">
-          {{.Country.Population}}
+        <span class="text-sm font-medium text-gray-800">
+          {{.FormattedPopulation}}
         </span>
       </div>
 
@@ -43,13 +43,13 @@
 
       <div class="flex flex-col gap-1">
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Currency</span>
-        <span class="text-sm font-medium text-gray-800">{{.Country.Currency}}</span>
+        <span class="text-sm font-medium text-gray-800">{{.FormattedCurrency}}</span>
       </div>
 
       <div class="flex flex-col gap-1">
         <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Languages</span>
         <span class="text-sm font-medium text-gray-800">
-          {{range $i, $l := .Country.Languages}}{{if $i}}, {{end}}{{$l}}{{end}}
+          {{.FormattedLanguages}}
         </span>
       </div>
 
