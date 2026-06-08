@@ -30,16 +30,15 @@ func (c *WishlistController) Post() {
 		return
 	}
 
-	if payload.CountryName == "" {
-		c.CustomAbort(http.StatusBadRequest, "country name is required")
-		return
-	}
-
-	wishlist := services.CreateWishlist(
+	wishlist, err := services.CreateWishlist(
 		c.Username,
 		payload.CountryName,
 		payload.Note,
 	)
+	if err != nil {
+		c.CustomAbort(http.StatusBadRequest, err.Error())
+		return
+	}
 
 	c.Ctx.Output.SetStatus(http.StatusCreated)
 	c.Data["json"] = wishlist

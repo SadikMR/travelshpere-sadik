@@ -51,7 +51,7 @@
     );
 
     const note = noteInput ? noteInput.value : "";
-    const status = statusSelect ? statusSelect.value : "want_to_visit";
+    const status = statusSelect ? statusSelect.value : "Planned";
 
     api(`/api/wishlist/${id}`, "PUT", { note, status })
       .then(() => refreshRows())

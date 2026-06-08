@@ -20,9 +20,8 @@
           class="js-status-select text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
           data-id="{{.ID}}"
         >
-          <option value="want_to_visit" {{if eq (printf "%s" .Status) "want_to_visit"}}selected{{end}}>Want to Visit</option>
-          <option value="planned" {{if eq (printf "%s" .Status) "planned"}}selected{{end}}>Planned</option>
-          <option value="visited" {{if eq (printf "%s" .Status) "visited"}}selected{{end}}>Visited</option>
+          <option value="Planned" {{if eq (printf "%s" .Status) "Planned"}}selected{{end}}>Planned</option>
+          <option value="Visited" {{if eq (printf "%s" .Status) "Visited"}}selected{{end}}>Visited</option>
         </select>
       </td>
 
