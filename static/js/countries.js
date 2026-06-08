@@ -106,8 +106,67 @@
     return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
   }
 
+  // ── Autocomplete ────────────────────────────────────────
+  const suggestions = document.getElementById("search-suggestions");
+
+  function showSuggestions(countries) {
+    if (!suggestions) return;
+
+    if (!countries.length || !searchInput.value.trim()) {
+      suggestions.classList.add("hidden");
+      suggestions.innerHTML = "";
+      return;
+    }
+
+    // Show top 8 matches
+    const items = countries.slice(0, 8);
+    suggestions.innerHTML = items.map((c) => `
+      <a href="/countries/${encodeURIComponent(c.name)}"
+         class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer transition-colors"
+         style="text-decoration:none;color:inherit;">
+        <img src="${esc(c.flag)}" alt="" class="w-8 h-5 object-cover rounded" onerror="this.style.display='none'" />
+        <div>
+          <div class="text-sm font-medium text-gray-900">${esc(c.name)}</div>
+          <div class="text-xs text-gray-400">${esc(c.capital || "")}${c.region ? " · " + esc(c.region) : ""}</div>
+        </div>
+      </a>
+    `).join("");
+    suggestions.classList.remove("hidden");
+  }
+
+  function autocomplete() {
+    const query = searchInput.value.trim();
+    if (!query) {
+      showSuggestions([]);
+      return;
+    }
+
+    fetch("/api/countries?search=" + encodeURIComponent(query))
+      .then((r) => r.ok ? r.json() : [])
+      .then((countries) => showSuggestions(countries))
+      .catch(() => showSuggestions([]));
+  }
+
+  // Hide suggestions on outside click
+  document.addEventListener("click", (e) => {
+    if (suggestions && !suggestions.contains(e.target) && e.target !== searchInput) {
+      suggestions.classList.add("hidden");
+    }
+  });
+
+  // Show suggestions on focus if there's text
+  searchInput.addEventListener("focus", () => {
+    if (searchInput.value.trim()) autocomplete();
+  });
+
   // ── Events ───────────────────────────────────────────────
-  searchInput.addEventListener("input", debounce(filter, 300));
+  const debouncedFilter = debounce(filter, 300);
+  const debouncedAutocomplete = debounce(autocomplete, 200);
+
+  searchInput.addEventListener("input", () => {
+    debouncedFilter();
+    debouncedAutocomplete();
+  });
   regionSelect.addEventListener("change", filter);
 
   // ── Boot: render initial SSR data ────────────────────────
