@@ -2,12 +2,28 @@ package routers
 
 import (
 	"github.com/SadikMR/travelshpere-sadik/controllers"
+	"github.com/SadikMR/travelshpere-sadik/controllers/api"
+	"github.com/SadikMR/travelshpere-sadik/filters"
+
 	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
+	// ── Filters ─────────────────────────────────────────────
+	// SSR auth: redirect to /login
+	beego.InsertFilter("/wishlist", beego.BeforeRouter, filters.AuthRequired)
+	beego.InsertFilter("/wishlist/*", beego.BeforeRouter, filters.AuthRequired)
+
+	// API auth: return 401 JSON
+	beego.InsertFilter("/api/wishlist", beego.BeforeRouter, filters.APIAuthRequired)
+	beego.InsertFilter("/api/wishlist/*", beego.BeforeRouter, filters.APIAuthRequired)
+
+	// ── Routes ──────────────────────────────────────────────
+
+	// Home
 	beego.Router("/", &controllers.HomeController{})
 
+	// Authentication
 	beego.Router(
 		"/login",
 		&controllers.AuthController{},
@@ -20,6 +36,7 @@ func init() {
 		"get:Logout;post:Logout",
 	)
 
+	// Countries
 	beego.Router(
 		"/countries",
 		&controllers.CountryController{},
@@ -30,5 +47,31 @@ func init() {
 		"/countries/:slug",
 		&controllers.CountryController{},
 		"get:Details",
+	)
+
+	// Wishlist SSR (protected by AuthRequired filter)
+	beego.Router(
+		"/wishlist",
+		&controllers.WishlistController{},
+		"get:Get",
+	)
+
+	beego.Router(
+		"/wishlist/rows",
+		&controllers.WishlistController{},
+		"get:Rows",
+	)
+
+	// Wishlist API (protected by APIAuthRequired filter)
+	beego.Router(
+		"/api/wishlist",
+		&api.WishlistController{},
+		"get:Get;post:Post",
+	)
+
+	beego.Router(
+		"/api/wishlist/:id",
+		&api.WishlistController{},
+		"put:Put;delete:Delete",
 	)
 }

@@ -2,19 +2,9 @@ package controllers
 
 import "strings"
 
+// AuthController handles login and logout.
 type AuthController struct {
 	BaseController
-}
-
-// Override Prepare to skip session check for auth routes
-func (c *AuthController) Prepare() {
-	if c.Data == nil {
-		c.Data = make(map[interface{}]interface{})
-	}
-	// Don't call BaseController.Prepare() here
-	// No session needed for login/logout pages
-	c.Data["IsLoggedIn"] = false
-	c.Data["Username"] = ""
 }
 
 func (c *AuthController) LoginPage() {

@@ -62,8 +62,9 @@
       id="wishlist-btn"
       data-country="{{.Country.Name}}"
       data-wishlisted="{{.IsWishlisted}}"
+      data-wishlist-id="{{.WishlistID}}"
       class="px-5 py-2 rounded-lg border-2 text-sm font-semibold transition-all duration-150
-             border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white"
+             {{if .IsWishlisted}}bg-gray-800 text-white border-gray-800{{else}}border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white{{end}}"
     >
       {{if .IsWishlisted}}✓ Added to Wishlist{{else}}+ Add to Wishlist{{end}}
     </button>
