@@ -25,5 +25,7 @@ type RestCountryDTO struct {
 
 	Region string `json:"region"`
 
+	SubRegion string `json:"subregion"`
+
 	Population int64 `json:"population"`
 }

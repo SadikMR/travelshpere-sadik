@@ -10,6 +10,7 @@ func ToCountry(countryDTO dto.RestCountryDTO) models.Country {
 	country := models.Country{
 		Name:       countryDTO.Name.Common,
 		Region:     countryDTO.Region,
+		SubRegion:  countryDTO.SubRegion,
 		Population: countryDTO.Population,
 		Flag:       countryDTO.Flags.PNG,
 	}

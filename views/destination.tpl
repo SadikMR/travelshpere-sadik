@@ -113,4 +113,4 @@
     ]
   };
 </script>
-<script src="/static/js/country-detail.js"></script>
+<script src="/static/js/destination.js"></script>

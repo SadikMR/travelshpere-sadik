@@ -59,6 +59,8 @@ func (s *CountryService) GetCountryBySlug(
 		return nil, err
 	}
 
+	slug = strings.ToLower(strings.TrimSpace(slug))
+
 	for _, country := range countries {
 
 		countrySlug := strings.ToLower(

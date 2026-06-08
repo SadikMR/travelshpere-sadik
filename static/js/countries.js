@@ -38,8 +38,10 @@
     const currency = esc(c.currency || "—");
     const langs    = esc((c.languages || []).join(", ") || "—");
     const pop      = c.population ? formatPop(c.population) : "—";
+    const slug     = encodeURIComponent(c.name);
 
     return `
+      <a href="/countries/${slug}" class="ts-card-link" style="text-decoration:none;color:inherit;display:block;">
       <div class="ts-card">
         <img
           class="ts-card__flag"
@@ -57,7 +59,8 @@
             <div><b>Languages:</b> ${langs}</div>
           </div>
         </div>
-      </div>`;
+      </div>
+      </a>`;
   }
 
   // ── Render ────────────────────────────────────────────────

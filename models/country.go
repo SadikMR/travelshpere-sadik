@@ -9,6 +9,7 @@ type Country struct {
 	Population int64
 	Flag       string
 	Region     string
+	SubRegion  string
 	Latitude   float64
 	Longitude  float64
 }
