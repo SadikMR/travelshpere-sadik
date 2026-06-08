@@ -1,47 +1,42 @@
 package controllers
 
-import (
-	"strings"
+import "strings"
 
-	beego "github.com/beego/beego/v2/server/web"
-)
-
-// AuthController handles authentication-related requests.
 type AuthController struct {
-	beego.Controller
+	BaseController
 }
 
-// LoginPage renders the login page.
+// Override Prepare to skip session check for auth routes
+func (c *AuthController) Prepare() {
+	if c.Data == nil {
+		c.Data = make(map[interface{}]interface{})
+	}
+	// Don't call BaseController.Prepare() here
+	// No session needed for login/logout pages
+	c.Data["IsLoggedIn"] = false
+	c.Data["Username"] = ""
+}
+
 func (c *AuthController) LoginPage() {
-	// Don't use layout for login page
 	c.Layout = ""
 	c.TplName = "auth/login.tpl"
 }
 
-// Login creates a session for the provided username.
 func (c *AuthController) Login() {
 	username := strings.TrimSpace(c.GetString("username"))
 
 	if username == "" {
-		if c.Data == nil {
-			c.Data = make(map[interface{}]interface{})
-		}
 		c.Data["Error"] = "Username is required"
 		c.Layout = ""
 		c.TplName = "auth/login.tpl"
 		return
 	}
 
-	// Set cookie to store username
-	c.Ctx.SetCookie("username", username, 3600, "/")
-
-	// Redirect to home
+	c.SetSession("username", username)
 	c.Redirect("/", 302)
 }
 
-// Logout removes the current session.
 func (c *AuthController) Logout() {
-	// Delete the username cookie
-	c.Ctx.SetCookie("username", "", -1, "/")
+	c.DelSession("username")
 	c.Redirect("/login", 302)
 }

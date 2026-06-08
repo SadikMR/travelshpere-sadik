@@ -7,18 +7,24 @@ type BaseController struct {
 }
 
 func (c *BaseController) Prepare() {
-	// Initialize Data if nil
 	if c.Data == nil {
 		c.Data = make(map[interface{}]interface{})
 	}
 
-	var isLoggedIn bool
+	// Guard against uninitialized session
+	defer func() {
+		if r := recover(); r != nil {
+			c.Data["IsLoggedIn"] = false
+			c.Data["Username"] = ""
+		}
+	}()
 
-	// Check for username in cookie
-	usernameCookie := c.Ctx.GetCookie("username")
-	if usernameCookie != "" {
-		isLoggedIn = true
+	username := c.GetSession("username")
+	if username != nil {
+		c.Data["IsLoggedIn"] = true
+		c.Data["Username"] = username.(string)
+	} else {
+		c.Data["IsLoggedIn"] = false
+		c.Data["Username"] = ""
 	}
-
-	c.Data["IsLoggedIn"] = isLoggedIn
 }
