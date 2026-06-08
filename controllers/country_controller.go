@@ -54,10 +54,24 @@ func (c *CountryController) Details() {
 	if err != nil {
 		attractions = nil
 	}
+	// Check if country is in user's wishlist
+	isWishlisted := false
+	wishlistID := 0
+	username, _ := c.Data["Username"].(string)
+	if username != "" {
+		for _, w := range services.ListWishlists(username) {
+			if w.CountryName == country.Name {
+				isWishlisted = true
+				wishlistID = w.ID
+				break
+			}
+		}
+	}
 
 	c.Data["Country"] = country
 	c.Data["Attractions"] = attractions
-	c.Data["IsWishlisted"] = false // update when wishlist service is ready
+	c.Data["IsWishlisted"] = isWishlisted
+	c.Data["WishlistID"] = wishlistID
 	c.Data["Title"] = country.Name
 	c.Data["FormattedPopulation"] = formatters.FormatPopulation(country.Population)
 	c.Data["FormattedLanguages"] = formatters.FormatLanguages(country.Languages)

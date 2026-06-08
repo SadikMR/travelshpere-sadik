@@ -30,15 +30,48 @@
   // ── Wishlist toggle ────────────────────────────────────────
   const wishBtn = document.getElementById("wishlist-btn");
   if (wishBtn) {
-    wishBtn.addEventListener("click", function () {
-      const current = this.dataset.wishlisted === "true";
-      const next = !current;
-      this.dataset.wishlisted = String(next);
-      this.textContent = next ? "✓ Added to Wishlist" : "+ Add to Wishlist";
-      if (next) {
-        this.classList.add("bg-gray-800", "text-white");
-      } else {
-        this.classList.remove("bg-gray-800", "text-white");
+    wishBtn.addEventListener("click", async function () {
+      const isWishlisted = this.dataset.wishlisted === "true";
+      const countryName = this.dataset.country;
+
+      try {
+        if (!isWishlisted) {
+          // Add to wishlist
+          const resp = await fetch("/api/wishlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ country_name: countryName, note: "" }),
+          });
+
+          if (resp.status === 401) {
+            window.location.href = "/login";
+            return;
+          }
+
+          if (!resp.ok) throw new Error("Failed to add");
+
+          const created = await resp.json();
+          this.dataset.wishlisted = "true";
+          this.dataset.wishlistId = created.id;
+          this.textContent = "✓ Added to Wishlist";
+          this.classList.add("bg-gray-800", "text-white");
+        } else {
+          // Remove from wishlist
+          const wid = this.dataset.wishlistId;
+          if (wid) {
+            const resp = await fetch("/api/wishlist/" + wid, {
+              method: "DELETE",
+            });
+            if (!resp.ok && resp.status !== 204) throw new Error("Failed to remove");
+          }
+
+          this.dataset.wishlisted = "false";
+          delete this.dataset.wishlistId;
+          this.textContent = "+ Add to Wishlist";
+          this.classList.remove("bg-gray-800", "text-white");
+        }
+      } catch (err) {
+        console.error("Wishlist error:", err);
       }
     });
   }
