@@ -47,3 +47,21 @@ func (c *CountryController) Get() {
 	c.Data["json"] = countries
 	c.ServeJSON()
 }
+
+// Detail returns JSON detail for a single country by slug.
+func (c *CountryController) Detail() {
+	slug := c.Ctx.Input.Param(":slug")
+
+	country, err := countryService.GetCountryBySlug(slug)
+	if err != nil {
+		responses.WriteError(
+			&c.Controller,
+			http.StatusNotFound,
+			"country not found",
+		)
+		return
+	}
+
+	c.Data["json"] = country
+	c.ServeJSON()
+}

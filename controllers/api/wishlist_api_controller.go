@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/SadikMR/travelshpere-sadik/services"
+	"github.com/SadikMR/travelshpere-sadik/utils/responses"
 )
 
 // WishlistController handles wishlist API requests.
@@ -26,7 +27,7 @@ func (c *WishlistController) Post() {
 	}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &payload); err != nil {
-		c.CustomAbort(http.StatusBadRequest, "invalid payload")
+		responses.WriteError(&c.Controller, http.StatusBadRequest, "invalid payload")
 		return
 	}
 
@@ -36,7 +37,7 @@ func (c *WishlistController) Post() {
 		payload.Note,
 	)
 	if err != nil {
-		c.CustomAbort(http.StatusBadRequest, err.Error())
+		responses.WriteError(&c.Controller, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -49,7 +50,7 @@ func (c *WishlistController) Post() {
 func (c *WishlistController) Put() {
 	id, err := c.GetInt(":id")
 	if err != nil {
-		c.CustomAbort(http.StatusBadRequest, "invalid id")
+		responses.WriteError(&c.Controller, http.StatusBadRequest, "invalid id")
 		return
 	}
 
@@ -59,7 +60,7 @@ func (c *WishlistController) Put() {
 	}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &payload); err != nil {
-		c.CustomAbort(http.StatusBadRequest, "invalid payload")
+		responses.WriteError(&c.Controller, http.StatusBadRequest, "invalid payload")
 		return
 	}
 
@@ -73,15 +74,14 @@ func (c *WishlistController) Put() {
 	if err != nil {
 		switch err {
 		case services.ErrWishlistNotFound:
-			c.CustomAbort(http.StatusNotFound, err.Error())
-
+			responses.WriteError(&c.Controller, http.StatusNotFound, err.Error())
 		case services.ErrForbidden:
-			c.CustomAbort(http.StatusForbidden, err.Error())
-
+			responses.WriteError(&c.Controller, http.StatusForbidden, err.Error())
 		case services.ErrInvalidStatus:
-			c.CustomAbort(http.StatusBadRequest, err.Error())
+			responses.WriteError(&c.Controller, http.StatusBadRequest, err.Error())
+		default:
+			responses.WriteError(&c.Controller, http.StatusInternalServerError, err.Error())
 		}
-
 		return
 	}
 
@@ -93,19 +93,19 @@ func (c *WishlistController) Put() {
 func (c *WishlistController) Delete() {
 	id, err := c.GetInt(":id")
 	if err != nil {
-		c.CustomAbort(http.StatusBadRequest, "invalid id")
+		responses.WriteError(&c.Controller, http.StatusBadRequest, "invalid id")
 		return
 	}
 
 	if err := services.DeleteWishlist(c.Username, id); err != nil {
 		switch err {
 		case services.ErrWishlistNotFound:
-			c.CustomAbort(http.StatusNotFound, err.Error())
-
+			responses.WriteError(&c.Controller, http.StatusNotFound, err.Error())
 		case services.ErrForbidden:
-			c.CustomAbort(http.StatusForbidden, err.Error())
+			responses.WriteError(&c.Controller, http.StatusForbidden, err.Error())
+		default:
+			responses.WriteError(&c.Controller, http.StatusInternalServerError, err.Error())
 		}
-
 		return
 	}
 

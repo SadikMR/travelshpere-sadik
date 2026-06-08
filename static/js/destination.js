@@ -29,6 +29,15 @@
 
   // ── Wishlist toggle ────────────────────────────────────────
   const wishBtn = document.getElementById("wishlist-btn");
+  const feedback = document.getElementById("wishlist-feedback");
+
+  function showFeedback(msg, isError) {
+    if (!feedback) return;
+    feedback.textContent = msg;
+    feedback.style.color = isError ? "#e53e3e" : "#38a169";
+    setTimeout(() => { feedback.textContent = ""; }, 3000);
+  }
+
   if (wishBtn) {
     wishBtn.addEventListener("click", async function () {
       const isWishlisted = this.dataset.wishlisted === "true";
@@ -48,13 +57,18 @@
             return;
           }
 
-          if (!resp.ok) throw new Error("Failed to add");
+          if (!resp.ok) {
+            const text = await resp.text();
+            showFeedback(text || "Failed to add", true);
+            return;
+          }
 
           const created = await resp.json();
           this.dataset.wishlisted = "true";
           this.dataset.wishlistId = created.id;
           this.textContent = "✓ Added to Wishlist";
           this.classList.add("bg-gray-800", "text-white");
+          showFeedback("Added to wishlist!", false);
         } else {
           // Remove from wishlist
           const wid = this.dataset.wishlistId;
@@ -62,16 +76,20 @@
             const resp = await fetch("/api/wishlist/" + wid, {
               method: "DELETE",
             });
-            if (!resp.ok && resp.status !== 204) throw new Error("Failed to remove");
+            if (!resp.ok && resp.status !== 204) {
+              showFeedback("Failed to remove", true);
+              return;
+            }
           }
 
           this.dataset.wishlisted = "false";
           delete this.dataset.wishlistId;
           this.textContent = "+ Add to Wishlist";
           this.classList.remove("bg-gray-800", "text-white");
+          showFeedback("Removed from wishlist", false);
         }
       } catch (err) {
-        console.error("Wishlist error:", err);
+        showFeedback("Network error", true);
       }
     });
   }

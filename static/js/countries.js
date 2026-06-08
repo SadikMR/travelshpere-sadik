@@ -1,14 +1,16 @@
 (function () {
   "use strict";
 
-  const countries = window.__COUNTRIES__ || [];
-  const grid        = document.getElementById("country-grid");
-  const searchInput = document.getElementById("search-input");
+  const grid         = document.getElementById("country-results");
+  const searchInput  = document.getElementById("search-input");
   const regionSelect = document.getElementById("region-select");
   const resultCount  = document.getElementById("result-count");
 
-  // ── Populate region dropdown ──────────────────────────────
-  const regions = [...new Set(countries.map((c) => c.region).filter(Boolean))].sort();
+  // ── Initial data from SSR ────────────────────────────────
+  let allCountries = window.__COUNTRIES__ || [];
+
+  // ── Populate region dropdown ─────────────────────────────
+  const regions = [...new Set(allCountries.map((c) => c.region).filter(Boolean))].sort();
   regions.forEach((r) => {
     const opt = document.createElement("option");
     opt.value = r;
@@ -16,7 +18,7 @@
     regionSelect.appendChild(opt);
   });
 
-  // ── Helpers ───────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────
   function formatPop(n) {
     if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
     if (n >= 1_000_000)     return (n / 1_000_000).toFixed(1) + "M";
@@ -32,7 +34,7 @@
       .replace(/"/g, "&quot;");
   }
 
-  // ── Card builder ──────────────────────────────────────────
+  // ── Card builder ─────────────────────────────────────────
   function buildCard(c) {
     const capital  = esc(c.capital  || "—");
     const currency = esc(c.currency || "—");
@@ -63,43 +65,51 @@
       </a>`;
   }
 
-  // ── Render ────────────────────────────────────────────────
+  // ── Render into #country-results only ────────────────────
   function render(list) {
     grid.innerHTML = list.length
       ? list.map(buildCard).join("")
       : `<div class="ts-empty">No countries match your search.</div>`;
 
-    resultCount.innerHTML = list.length === countries.length
-      ? `Showing all <strong>${countries.length}</strong> countries`
-      : `Showing <strong>${list.length}</strong> of ${countries.length} countries`;
+    resultCount.innerHTML = `Showing <strong>${list.length}</strong> countries`;
   }
 
-  // ── Filter ────────────────────────────────────────────────
+  // ── AJAX filter via GET /api/countries ────────────────────
   function filter() {
-    const query  = searchInput.value.trim().toLowerCase();
+    const query  = searchInput.value.trim();
     const region = regionSelect.value;
 
-    const result = countries.filter((c) => {
-      const inRegion = !region || c.region === region;
-      const inQuery  = !query  ||
-        c.name.toLowerCase().includes(query) ||
-        (c.capital && c.capital.toLowerCase().includes(query));
-      return inRegion && inQuery;
-    });
+    const params = new URLSearchParams();
+    if (query)  params.set("search", query);
+    if (region) params.set("region", region);
 
-    render(result);
+    // Show loading state
+    grid.innerHTML = `<div class="ts-empty" style="color:#aaa;">Loading...</div>`;
+
+    fetch("/api/countries?" + params.toString())
+      .then((resp) => {
+        if (!resp.ok) throw new Error("API error");
+        return resp.json();
+      })
+      .then((countries) => {
+        render(countries);
+      })
+      .catch((err) => {
+        console.error("Country search failed:", err);
+        grid.innerHTML = `<div class="ts-empty" style="color:#e53e3e;">Failed to load countries. Please try again.</div>`;
+      });
   }
 
-  // ── Debounce ──────────────────────────────────────────────
+  // ── Debounce ─────────────────────────────────────────────
   function debounce(fn, ms) {
     let t;
     return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
   }
 
-  // ── Events ────────────────────────────────────────────────
-  searchInput.addEventListener("input", debounce(filter, 250));
+  // ── Events ───────────────────────────────────────────────
+  searchInput.addEventListener("input", debounce(filter, 300));
   regionSelect.addEventListener("change", filter);
 
-  // ── Boot ──────────────────────────────────────────────────
-  render(countries);
+  // ── Boot: render initial SSR data ────────────────────────
+  render(allCountries);
 })();

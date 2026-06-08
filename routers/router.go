@@ -49,6 +49,26 @@ func init() {
 		"get:Details",
 	)
 
+	// Country API
+	beego.Router(
+		"/api/countries",
+		&api.CountryController{},
+		"get:Get",
+	)
+
+	beego.Router(
+		"/api/countries/:slug",
+		&api.CountryController{},
+		"get:Detail",
+	)
+
+	// Attractions API
+	beego.Router(
+		"/api/attractions",
+		&api.AttractionController{},
+		"get:Get",
+	)
+
 	// Wishlist SSR (protected by AuthRequired filter)
 	beego.Router(
 		"/wishlist",

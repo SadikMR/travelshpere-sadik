@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const container = document.getElementById("wishlist-container");
+  const container = document.getElementById("wishlist-rows");
   if (!container) return;
 
   // ── Helper: call API and return JSON ─────────────────────

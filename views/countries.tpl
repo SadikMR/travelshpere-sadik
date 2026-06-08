@@ -41,7 +41,7 @@
   </div>
 
   <!-- Grid -->
-  <div id="country-grid" class="ts-grid">
+  <div id="country-results" class="ts-grid">
     <!-- Cards injected by JS -->
   </div>
 

@@ -68,6 +68,7 @@
     >
       {{if .IsWishlisted}}✓ Added to Wishlist{{else}}+ Add to Wishlist{{end}}
     </button>
+    <div id="wishlist-feedback" class="mt-2 text-sm"></div>
   </div>
 
   <!-- Bottom Grid -->
