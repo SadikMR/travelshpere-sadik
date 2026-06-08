@@ -7,7 +7,28 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.HomeController{})
-	beego.Router("/login", &controllers.AuthController{}, "get:LoginPage;post:Login")
-	beego.Router("/logout", &controllers.AuthController{}, "get:Logout;post:Logout")
-	beego.Router("/countries", &controllers.CountryController{})
+
+	beego.Router(
+		"/login",
+		&controllers.AuthController{},
+		"get:LoginPage;post:Login",
+	)
+
+	beego.Router(
+		"/logout",
+		&controllers.AuthController{},
+		"get:Logout;post:Logout",
+	)
+
+	beego.Router(
+		"/countries",
+		&controllers.CountryController{},
+		"get:Get",
+	)
+
+	beego.Router(
+		"/countries/:slug",
+		&controllers.CountryController{},
+		"get:Details",
+	)
 }
