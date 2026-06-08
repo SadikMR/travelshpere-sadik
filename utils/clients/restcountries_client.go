@@ -8,11 +8,16 @@ import (
 	"github.com/SadikMR/travelshpere-sadik/dto"
 )
 
-const restCountriesURL = "https://restcountries.com/v3.1/all?fields=name,capital,currencies,languages,flag,latlng,region,population"
+const baseURL = "https://restcountries.com/v3.1"
 
-// GetCountries retrieves country data from the REST Countries API.
+// GetCountries retrieves all countries.
 func GetCountries() ([]dto.RestCountryDTO, error) {
-	resp, err := http.Get(restCountriesURL)
+	url := fmt.Sprintf(
+		"%s/all?fields=name,capital,currencies,languages,flags,latlng,region,population",
+		baseURL,
+	)
+
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +35,8 @@ func GetCountries() ([]dto.RestCountryDTO, error) {
 // GetCountryByName retrieves a country by name.
 func GetCountryByName(name string) ([]dto.RestCountryDTO, error) {
 	url := fmt.Sprintf(
-		"https://restcountries.com/v3.1/name/%s?fields=name,capital,currencies,languages,flag,latlng,region,population",
+		"%s/name/%s?fields=name,capital,currencies,languages,flags,latlng,region,population",
+		baseURL,
 		name,
 	)
 

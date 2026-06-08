@@ -1,6 +1,12 @@
 package dto
 
+// RestCountryDTO represents a country response from the REST Countries API.
 type RestCountryDTO struct {
+	Flags struct {
+		PNG string `json:"png"`
+		SVG string `json:"svg"`
+	} `json:"flags"`
+
 	Flag string `json:"flag"`
 
 	Name struct {
