@@ -1,46 +1,60 @@
 {{if .Wishlists}}
-<table border="1" cellpadding="8">
-    <thead>
-        <tr>
-            <th>Country</th>
-            <th>Status</th>
-            <th>Note</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+<table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm">
+  <thead>
+    <tr class="bg-gray-50 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+      <th class="px-4 py-3">Country</th>
+      <th class="px-4 py-3">Status</th>
+      <th class="px-4 py-3">Note</th>
+      <th class="px-4 py-3 text-right">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Wishlists}}
+    <tr class="border-t border-gray-100" data-wishlist-id="{{.ID}}">
+      <td class="px-4 py-3 font-medium text-gray-900">
+        <a href="/countries/{{.CountryName}}" class="text-blue-600 hover:underline">{{.CountryName}}</a>
+      </td>
 
-    <tbody>
-        {{range .Wishlists}}
-        <tr>
-            <td>{{.CountryName}}</td>
+      <td class="px-4 py-3">
+        <select
+          class="js-status-select text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-400"
+          data-id="{{.ID}}"
+        >
+          <option value="want_to_visit" {{if eq (printf "%s" .Status) "want_to_visit"}}selected{{end}}>Want to Visit</option>
+          <option value="planned" {{if eq (printf "%s" .Status) "planned"}}selected{{end}}>Planned</option>
+          <option value="visited" {{if eq (printf "%s" .Status) "visited"}}selected{{end}}>Visited</option>
+        </select>
+      </td>
 
-            <td>{{.Status}}</td>
+      <td class="px-4 py-3">
+        <input
+          type="text"
+          class="js-note-input text-sm border border-gray-300 rounded px-2 py-1 w-full focus:outline-none focus:ring-1 focus:ring-blue-400"
+          data-id="{{.ID}}"
+          value="{{.Note}}"
+          placeholder="Add a note..."
+        />
+      </td>
 
-            <td>{{.Note}}</td>
-
-            <td>
-                <button
-                    hx-put="/api/wishlist/{{.ID}}"
-                    hx-vals='{
-                        "note":"{{.Note}}",
-                        "status":"planned"
-                    }'
-                    hx-get="/wishlist/rows"
-                    hx-target="#wishlist-rows">
-                    Mark Planned
-                </button>
-
-                <button
-                    hx-delete="/api/wishlist/{{.ID}}"
-                    hx-get="/wishlist/rows"
-                    hx-target="#wishlist-rows">
-                    Delete
-                </button>
-            </td>
-        </tr>
-        {{end}}
-    </tbody>
+      <td class="px-4 py-3 text-right">
+        <div class="flex items-center justify-end gap-2">
+          <button
+            class="js-save-note text-xs px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+            data-id="{{.ID}}"
+          >Save</button>
+          <button
+            class="js-delete-btn text-xs px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            data-id="{{.ID}}"
+          >Delete</button>
+        </div>
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
 </table>
 {{else}}
-<p>No wishlist entries found.</p>
+<div class="text-center py-12 text-gray-400">
+  <p class="text-lg">No wishlist entries yet.</p>
+  <p class="text-sm mt-1">Visit a <a href="/countries" class="text-blue-600 hover:underline">country page</a> and click "Add to Wishlist".</p>
+</div>
 {{end}}
