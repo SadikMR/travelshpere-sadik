@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --ts-accent:       #E8440A;
+  --ts-surface:      #F7F5F0;
+  --ts-card:         #FFFFFF;
+  --ts-text:         #0F0E0C;
+  --ts-muted:        #6B6860;
+  --ts-border:       #E5E2DA;
+  --ts-input-focus:  #E8440A;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.ts-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  background: var(--ts-surface);
+  min-height: 100vh;
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+.ts-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ts-text);
+}
+
+.ts-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  color: var(--ts-muted);
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.ts-label {
+  display: block;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ts-muted);
+  margin-bottom: 6px;
+}
+
+.ts-result-count {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ts-muted);
+}
+
+.ts-result-count strong {
+  color: var(--ts-accent);
+  font-weight: 700;
+}
+
+/* ── Filter bar ───────────────────────────────────────────── */
+.ts-filter-bar {
+  background: #fff;
+  border: 1.5px solid var(--ts-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.ts-input,
+.ts-select {
+  display: block;
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid var(--ts-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--ts-text);
+  outline: none;
+  transition: border-color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ts-input:focus,
+.ts-select:focus {
+  border-color: var(--ts-input-focus);
+  box-shadow: 0 0 0 3px rgba(232, 68, 10, 0.08);
+}
+
+.ts-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6860' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+/* ── Country grid ─────────────────────────────────────────── */
+.ts-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .ts-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .ts-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+}
+
+@media (max-width: 420px) {
+  .ts-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+}
+
+/* ── Country card ─────────────────────────────────────────── */
+.ts-card {
+  background: var(--ts-card);
+  border: 1px solid var(--ts-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.ts-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.09);
+}
+
+.ts-card__flag {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background: var(--ts-surface);
+}
+
+@media (max-width: 640px) {
+  .ts-card__flag { height: 110px; }
+}
+
+.ts-card__body {
+  padding: 14px 16px 16px;
+}
+
+.ts-card__name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.97rem;
+  color: var(--ts-text);
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ts-card__meta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  color: var(--ts-muted);
+  line-height: 1.65;
+}
+
+.ts-card__meta b {
+  color: var(--ts-text);
+  font-weight: 500;
+}
+
+/* ── Empty state ──────────────────────────────────────────── */
+.ts-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ts-muted);
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+}
