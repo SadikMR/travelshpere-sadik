@@ -1,0 +1,9 @@
+# Docker
+.git
+.gitignore
+coverage.out
+coverage_pure.out
+*.md
+*.test
+Dockerfile
+docker-compose.yml
