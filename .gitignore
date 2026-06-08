@@ -1,35 +1,27 @@
-# Binaries
+# Configuration
+conf/app.conf
 
+# Binaries
 /travelshpere-sadik
 *.exe
 *.out
 
-# Configuration
-
-conf/app.conf
-conf/app.conf.bak
-
-# Go dependencies (optional if not using vendoring)
-
+# Dependencies
 vendor/
 
 # IDE
-
 .vscode/
 .idea/
 *.swp
 *.swo
 
 # OS
-
 .DS_Store
 Thumbs.db
 
-# Test output
-
+# Tests
 *.test
 *.prof
 
 # Logs
-
 *.log
