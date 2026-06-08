@@ -7,6 +7,7 @@ import (
 	"github.com/SadikMR/travelshpere-sadik/models"
 )
 
+// Sentinel errors returned by wishlist service operations.
 var (
 	ErrWishlistNotFound    = errors.New("wishlist not found")
 	ErrForbidden           = errors.New("forbidden")

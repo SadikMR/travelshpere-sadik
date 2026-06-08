@@ -1,6 +1,6 @@
 package models
 
-// Country represents country information used by the application.
+// Country represents a country with geographic and demographic data.
 type Country struct {
 	Name       string   `json:"name"`
 	Capital    string   `json:"capital"`

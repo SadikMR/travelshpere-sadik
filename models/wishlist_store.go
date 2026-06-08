@@ -2,12 +2,14 @@ package models
 
 import "sync"
 
+// WishlistStore provides thread-safe in-memory storage for wishlists.
 type WishlistStore struct {
 	mu     sync.RWMutex
 	nextID int
 	items  map[int]*Wishlist
 }
 
+// NewWishlistStore creates an empty WishlistStore.
 func NewWishlistStore() *WishlistStore {
 	return &WishlistStore{
 		nextID: 1,
@@ -15,6 +17,7 @@ func NewWishlistStore() *WishlistStore {
 	}
 }
 
+// Create adds a wishlist entry and assigns an auto-incremented ID.
 func (s *WishlistStore) Create(wishlist *Wishlist) *Wishlist {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -27,6 +30,7 @@ func (s *WishlistStore) Create(wishlist *Wishlist) *Wishlist {
 	return wishlist
 }
 
+// GetByID returns a wishlist entry by its ID.
 func (s *WishlistStore) GetByID(id int) (*Wishlist, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -36,6 +40,7 @@ func (s *WishlistStore) GetByID(id int) (*Wishlist, bool) {
 	return wishlist, exists
 }
 
+// GetByUser returns all wishlist entries for a given username.
 func (s *WishlistStore) GetByUser(username string) []*Wishlist {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
@@ -51,6 +56,7 @@ func (s *WishlistStore) GetByUser(username string) []*Wishlist {
 	return result
 }
 
+// Update replaces a wishlist entry in the store.
 func (s *WishlistStore) Update(wishlist *Wishlist) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -58,6 +64,7 @@ func (s *WishlistStore) Update(wishlist *Wishlist) {
 	s.items[wishlist.ID] = wishlist
 }
 
+// Delete removes a wishlist entry by ID.
 func (s *WishlistStore) Delete(id int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
