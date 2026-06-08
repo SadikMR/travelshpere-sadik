@@ -74,4 +74,20 @@ func init() {
 		&api.WishlistController{},
 		"put:Put;delete:Delete",
 	)
+
+	// Dashboard SSR (protected by AuthRequired filter)
+	beego.InsertFilter("/dashboard", beego.BeforeRouter, filters.AuthRequired)
+	beego.Router(
+		"/dashboard",
+		&controllers.DashboardController{},
+		"get:Get",
+	)
+
+	// Dashboard API (protected by APIAuthRequired filter)
+	beego.InsertFilter("/api/dashboard/*", beego.BeforeRouter, filters.APIAuthRequired)
+	beego.Router(
+		"/api/dashboard/summary",
+		&api.DashboardController{},
+		"get:Summary",
+	)
 }

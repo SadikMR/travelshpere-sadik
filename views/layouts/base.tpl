@@ -30,6 +30,10 @@
                     Wishlist
                 </a>
 
+                <a href="/dashboard" class="hover:text-blue-600">
+                    Dashboard
+                </a>
+
                 {{if .IsLoggedIn}}
                 <form action="/logout" method="post" class="inline">
                     <button
