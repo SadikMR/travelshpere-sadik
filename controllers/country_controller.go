@@ -57,7 +57,7 @@ func (c *CountryController) Details() {
 	// Check if country is in user's wishlist
 	isWishlisted := false
 	wishlistID := 0
-	username, _ := c.Data["Username"].(string)
+	username := c.GetUsername()
 	if username != "" {
 		for _, w := range services.ListWishlists(username) {
 			if w.CountryName == country.Name {

@@ -36,14 +36,14 @@ func (s *WishlistStore) GetByID(id int) (*Wishlist, bool) {
 	return wishlist, exists
 }
 
-func (s *WishlistStore) GetByUser(userID string) []*Wishlist {
+func (s *WishlistStore) GetByUser(username string) []*Wishlist {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
 	var result []*Wishlist
 
 	for _, item := range s.items {
-		if item.UserID == userID {
+		if item.Username == username {
 			result = append(result, item)
 		}
 	}

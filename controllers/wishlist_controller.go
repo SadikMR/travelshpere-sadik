@@ -11,9 +11,7 @@ type WishlistController struct {
 
 // Get renders the wishlist page.
 func (c *WishlistController) Get() {
-	username, _ := c.Data["Username"].(string)
-
-	c.Data["Wishlists"] = services.ListWishlists(username)
+	c.Data["Wishlists"] = services.ListWishlists(c.GetUsername())
 	c.Data["Title"] = "My Wishlist"
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "wishlist/index.tpl"
@@ -21,8 +19,6 @@ func (c *WishlistController) Get() {
 
 // Rows renders the wishlist rows partial.
 func (c *WishlistController) Rows() {
-	username, _ := c.Data["Username"].(string)
-
-	c.Data["Wishlists"] = services.ListWishlists(username)
+	c.Data["Wishlists"] = services.ListWishlists(c.GetUsername())
 	c.TplName = "wishlist/rows.tpl"
 }

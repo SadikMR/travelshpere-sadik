@@ -10,7 +10,7 @@ const (
 
 type Wishlist struct {
     ID          int            `json:"id"`
-    UserID      string         `json:"user_id"`
+    Username    string         `json:"username"`
     CountryName string         `json:"country_name"`
     Note        string         `json:"note"`
     Status      WishlistStatus `json:"status"`

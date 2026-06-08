@@ -15,18 +15,18 @@ var (
 var wishlistStore = models.NewWishlistStore()
 
 // ListWishlists returns all wishlist entries for a user.
-func ListWishlists(userID string) []*models.Wishlist {
-	return wishlistStore.GetByUser(userID)
+func ListWishlists(username string) []*models.Wishlist {
+	return wishlistStore.GetByUser(username)
 }
 
 // CreateWishlist adds a country to a user's wishlist.
 func CreateWishlist(
-	userID,
+	username,
 	countryName,
 	note string,
 ) *models.Wishlist {
 	wishlist := &models.Wishlist{
-		UserID:      userID,
+		Username:    username,
 		CountryName: countryName,
 		Note:        note,
 		Status:      models.StatusWantToVisit,
@@ -37,7 +37,7 @@ func CreateWishlist(
 
 // UpdateWishlist updates a wishlist entry.
 func UpdateWishlist(
-	userID string,
+	username string,
 	id int,
 	note string,
 	status string,
@@ -47,7 +47,7 @@ func UpdateWishlist(
 		return nil, ErrWishlistNotFound
 	}
 
-	if wishlist.UserID != userID {
+	if wishlist.Username != username {
 		return nil, ErrForbidden
 	}
 
@@ -68,13 +68,13 @@ func UpdateWishlist(
 }
 
 // DeleteWishlist removes a wishlist entry.
-func DeleteWishlist(userID string, id int) error {
+func DeleteWishlist(username string, id int) error {
 	wishlist, exists := wishlistStore.GetByID(id)
 	if !exists {
 		return ErrWishlistNotFound
 	}
 
-	if wishlist.UserID != userID {
+	if wishlist.Username != username {
 		return ErrForbidden
 	}
 

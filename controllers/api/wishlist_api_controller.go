@@ -5,51 +5,21 @@ import (
 	"net/http"
 
 	"github.com/SadikMR/travelshpere-sadik/services"
-
-	beego "github.com/beego/beego/v2/server/web"
 )
 
 // WishlistController handles wishlist API requests.
 type WishlistController struct {
-	beego.Controller
-}
-
-// getUserID safely extracts the username from the session.
-// Returns empty string and aborts with 401 if not authenticated.
-func (c *WishlistController) getUserID() (string, bool) {
-	session := c.GetSession("username")
-	if session == nil {
-		c.CustomAbort(http.StatusUnauthorized, "login required")
-		return "", false
-	}
-
-	userID, ok := session.(string)
-	if !ok || userID == "" {
-		c.CustomAbort(http.StatusUnauthorized, "login required")
-		return "", false
-	}
-
-	return userID, true
+	BaseAPIController
 }
 
 // Get returns the authenticated user's wishlist.
 func (c *WishlistController) Get() {
-	userID, ok := c.getUserID()
-	if !ok {
-		return
-	}
-
-	c.Data["json"] = services.ListWishlists(userID)
+	c.Data["json"] = services.ListWishlists(c.Username)
 	c.ServeJSON()
 }
 
 // Post creates a wishlist entry.
 func (c *WishlistController) Post() {
-	userID, ok := c.getUserID()
-	if !ok {
-		return
-	}
-
 	var payload struct {
 		CountryName string `json:"country_name"`
 		Note        string `json:"note"`
@@ -66,24 +36,18 @@ func (c *WishlistController) Post() {
 	}
 
 	wishlist := services.CreateWishlist(
-		userID,
+		c.Username,
 		payload.CountryName,
 		payload.Note,
 	)
 
 	c.Ctx.Output.SetStatus(http.StatusCreated)
-
 	c.Data["json"] = wishlist
 	c.ServeJSON()
 }
 
 // Put updates a wishlist entry.
 func (c *WishlistController) Put() {
-	userID, ok := c.getUserID()
-	if !ok {
-		return
-	}
-
 	id, err := c.GetInt(":id")
 	if err != nil {
 		c.CustomAbort(http.StatusBadRequest, "invalid id")
@@ -101,7 +65,7 @@ func (c *WishlistController) Put() {
 	}
 
 	wishlist, err := services.UpdateWishlist(
-		userID,
+		c.Username,
 		id,
 		payload.Note,
 		payload.Status,
@@ -128,18 +92,13 @@ func (c *WishlistController) Put() {
 
 // Delete removes a wishlist entry.
 func (c *WishlistController) Delete() {
-	userID, ok := c.getUserID()
-	if !ok {
-		return
-	}
-
 	id, err := c.GetInt(":id")
 	if err != nil {
 		c.CustomAbort(http.StatusBadRequest, "invalid id")
 		return
 	}
 
-	if err := services.DeleteWishlist(userID, id); err != nil {
+	if err := services.DeleteWishlist(c.Username, id); err != nil {
 		switch err {
 		case services.ErrWishlistNotFound:
 			c.CustomAbort(http.StatusNotFound, err.Error())

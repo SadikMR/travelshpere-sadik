@@ -3,11 +3,23 @@ package routers
 import (
 	"github.com/SadikMR/travelshpere-sadik/controllers"
 	"github.com/SadikMR/travelshpere-sadik/controllers/api"
+	"github.com/SadikMR/travelshpere-sadik/filters"
 
 	beego "github.com/beego/beego/v2/server/web"
 )
 
 func init() {
+	// ── Filters ─────────────────────────────────────────────
+	// SSR auth: redirect to /login
+	beego.InsertFilter("/wishlist", beego.BeforeRouter, filters.AuthRequired)
+	beego.InsertFilter("/wishlist/*", beego.BeforeRouter, filters.AuthRequired)
+
+	// API auth: return 401 JSON
+	beego.InsertFilter("/api/wishlist", beego.BeforeRouter, filters.APIAuthRequired)
+	beego.InsertFilter("/api/wishlist/*", beego.BeforeRouter, filters.APIAuthRequired)
+
+	// ── Routes ──────────────────────────────────────────────
+
 	// Home
 	beego.Router("/", &controllers.HomeController{})
 
@@ -37,7 +49,7 @@ func init() {
 		"get:Details",
 	)
 
-	// Wishlist SSR
+	// Wishlist SSR (protected by AuthRequired filter)
 	beego.Router(
 		"/wishlist",
 		&controllers.WishlistController{},
@@ -50,7 +62,7 @@ func init() {
 		"get:Rows",
 	)
 
-	// Wishlist API
+	// Wishlist API (protected by APIAuthRequired filter)
 	beego.Router(
 		"/api/wishlist",
 		&api.WishlistController{},
