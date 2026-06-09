@@ -32,7 +32,7 @@ func (s *CountryService) GetCountries(
 		country := transformers.ToCountry(countryDTO)
 
 		if search != "" &&
-			!strings.Contains(
+			!strings.HasPrefix(
 				strings.ToLower(country.Name),
 				search,
 			) {

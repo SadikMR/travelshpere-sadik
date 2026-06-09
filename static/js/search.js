@@ -1,12 +1,11 @@
 /**
  * TravelSphere — search.js
  *
- * AJAX autocomplete for the home page country search.
- * - Initial page load is SSR (no JS needed for content).
- * - Typing in the search box calls /api/countries/search?q=
- *   and updates #search-results ONLY — zero full-page reloads.
- * - 300 ms debounce on every keystroke.
- * - Full keyboard navigation (↑ ↓ Enter Escape).
+ * Autocomplete dropdown (unchanged) + live grid filtering as extra.
+ * - Dropdown: fetches /api/countries/search?q= with keyboard nav, selecting navigates to country page.
+ * - Grid: as you type, /api/countries?search= filters .country-grid in place.
+ * - Empty input restores original SSR grid.
+ * - "From the left" match: results are already ordered by the API; grid preserves that order.
  */
 (function () {
   "use strict";
@@ -14,59 +13,49 @@
   /* ── Elements ─────────────────────────────────────────── */
   var input    = document.getElementById("country-search");
   var dropdown = document.getElementById("search-results");
-  if (!input || !dropdown) return;          // not on home page
+  if (!input || !dropdown) return;
 
-  /* ── State ────────────────────────────────────────────── */
-  var timer       = null;
+  var grid      = document.querySelector(".country-grid");
+  var gridTitle = grid ? grid.closest(".section").querySelector(".section-title") : null;
+  var origHTML  = grid ? grid.innerHTML : "";
+  var origTitle = gridTitle ? gridTitle.textContent : "";
+
+  /* ── Autocomplete state ───────────────────────────────── */
+  var acTimer     = null;
+  var gridTimer   = null;
   var activeIdx   = -1;
-  var suggestions = [];                     // last successful response
+  var suggestions = [];
 
   /* ── Debounce ─────────────────────────────────────────── */
   function debounce(fn, ms) {
-    return function () {
-      clearTimeout(timer);
-      timer = setTimeout(fn, ms);
-    };
+    return function () { clearTimeout(arguments.callee._t); arguments.callee._t = setTimeout(fn, ms); };
   }
 
-  /* ── Fetch suggestions from server ───────────────────── */
+  /* ── AUTOCOMPLETE: fetch suggestions ─────────────────── */
   function fetchSuggestions() {
     var q = input.value.trim();
-
-    if (q.length === 0) {
-      suggestions = [];
-      hideDropdown();
-      return;
-    }
+    if (!q) { suggestions = []; hideDropdown(); return; }
 
     fetch("/api/countries/search?q=" + encodeURIComponent(q), {
       headers: { "X-Requested-With": "XMLHttpRequest" }
     })
-      .then(function (res) {
-        if (!res.ok) throw new Error("HTTP " + res.status);
-        return res.json();
-      })
+      .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
       .then(function (data) {
-        suggestions = Array.isArray(data) ? data : [];
+        var all = Array.isArray(data) ? data : [];
+        suggestions = prefixFilter(all, q, "name");
         renderDropdown();
       })
-      .catch(function (err) {
-        console.warn("Search error:", err);
-        suggestions = [];
-        hideDropdown();
-      });
+      .catch(function () { suggestions = []; hideDropdown(); });
   }
 
-  var debouncedFetch = debounce(fetchSuggestions, 300);
-
-  /* ── Render dropdown items ────────────────────────────── */
+  /* ── AUTOCOMPLETE: render dropdown ───────────────────── */
   function renderDropdown() {
     dropdown.innerHTML = "";
     activeIdx = -1;
 
-    if (suggestions.length === 0) {
+    if (!suggestions.length) {
       var empty = document.createElement("li");
-      empty.className = "dd-empty";
+      empty.className   = "dd-empty";
       empty.textContent = "No results found";
       dropdown.appendChild(empty);
       showDropdown();
@@ -74,7 +63,7 @@
     }
 
     suggestions.forEach(function (item, idx) {
-      var li = document.createElement("li");
+      var li  = document.createElement("li");
       li.setAttribute("role", "option");
       li.setAttribute("data-idx", String(idx));
 
@@ -89,10 +78,9 @@
       li.appendChild(name);
       li.appendChild(cap);
 
-      /* mousedown fires before blur so the input keeps focus */
       li.addEventListener("mousedown", function (e) {
         e.preventDefault();
-        selectItem(item);
+        selectItem(item);         // navigate — unchanged behaviour
       });
 
       dropdown.appendChild(li);
@@ -101,14 +89,14 @@
     showDropdown();
   }
 
-  /* ── Navigate to country page ─────────────────────────── */
+  /* ── AUTOCOMPLETE: select → navigate to country page ─── */
   function selectItem(item) {
     input.value = item.name;
     hideDropdown();
-    window.location.href = "/countries/" + item.slug;
+    window.location.href = "/countries/" + (item.slug || encodeURIComponent(item.name));
   }
 
-  /* ── Keyboard navigation ──────────────────────────────── */
+  /* ── AUTOCOMPLETE: keyboard nav ──────────────────────── */
   input.addEventListener("keydown", function (e) {
     var items = dropdown.querySelectorAll("li:not(.dd-empty)");
     if (!items.length || dropdown.classList.contains("hidden")) return;
@@ -123,9 +111,7 @@
       updateHighlight(items);
     } else if (e.key === "Enter") {
       e.preventDefault();
-      if (activeIdx >= 0 && suggestions[activeIdx]) {
-        selectItem(suggestions[activeIdx]);
-      }
+      if (activeIdx >= 0 && suggestions[activeIdx]) selectItem(suggestions[activeIdx]);
     } else if (e.key === "Escape") {
       hideDropdown();
       input.blur();
@@ -139,21 +125,106 @@
     });
   }
 
+  /* ── GRID: build a card matching SSR markup ───────────── */
+  function buildCard(c) {
+    var a = document.createElement("a");
+    a.className = "country-card";
+    a.href = "/countries/" + encodeURIComponent(c.name || "");
+
+    var flagDiv = document.createElement("div");
+    flagDiv.className = "country-flag";
+
+    var img = document.createElement("img");
+    img.src     = c.flag || "";
+    img.alt     = "Flag of " + (c.name || "");
+    img.loading = "lazy";
+    img.onerror = function () { this.style.background = "#e5e2da"; this.removeAttribute("src"); };
+    flagDiv.appendChild(img);
+
+    var info = document.createElement("div");
+    info.className = "country-info";
+
+    var nameSpan = document.createElement("span");
+    nameSpan.className   = "country-name";
+    nameSpan.textContent = c.name || "";
+
+    var meta = document.createElement("span");
+    meta.className   = "country-meta";
+    meta.textContent = (c.capital || "") + (c.region ? " · " + c.region : "");
+
+    info.appendChild(nameSpan);
+    info.appendChild(meta);
+    a.appendChild(flagDiv);
+    a.appendChild(info);
+    return a;
+  }
+
+  /* ── GRID: render results ─────────────────────────────── */
+  function renderGrid(countries) {
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    if (!countries || !countries.length) {
+      var p = document.createElement("p");
+      p.className   = "empty-state";
+      p.textContent = "No countries match your search.";
+      grid.appendChild(p);
+    } else {
+      countries.forEach(function (c) { grid.appendChild(buildCard(c)); });
+    }
+
+    if (gridTitle) gridTitle.textContent = "Search results";
+  }
+
+  /* ── GRID: restore SSR ────────────────────────────────── */
+  function restoreGrid() {
+    if (!grid) return;
+    grid.innerHTML = origHTML;
+    if (gridTitle) gridTitle.textContent = origTitle;
+  }
+
+  /* ── Prefix filter: only names starting with query ──── */
+  function prefixFilter(list, q, key) {
+    var lower = q.toLowerCase();
+    return list.filter(function (item) {
+      return (item[key] || "").toLowerCase().indexOf(lower) === 0;
+    });
+  }
+
+  /* ── GRID: fetch and render ───────────────────────────── */
+  function updateGrid() {
+    var q = input.value.trim();
+    if (!q) { restoreGrid(); return; }
+
+    fetch("/api/countries?search=" + encodeURIComponent(q))
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (data) {
+        var filtered = prefixFilter(Array.isArray(data) ? data : [], q, "name");
+        renderGrid(filtered);
+      })
+      .catch(function () { renderGrid([]); });
+  }
+
   /* ── Input events ─────────────────────────────────────── */
-  input.addEventListener("input", debouncedFetch);
+  input.addEventListener("input", function () {
+    // Autocomplete dropdown — 300ms debounce
+    clearTimeout(acTimer);
+    acTimer = setTimeout(fetchSuggestions, 300);
+
+    // Grid update — 300ms debounce
+    clearTimeout(gridTimer);
+    gridTimer = setTimeout(updateGrid, 300);
+  });
 
   input.addEventListener("focus", function () {
     if (suggestions.length > 0) showDropdown();
   });
 
-  /* close when clicking anywhere outside the search box */
   document.addEventListener("click", function (e) {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      hideDropdown();
-    }
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) hideDropdown();
   });
 
-  /* ── Show / hide helpers ──────────────────────────────── */
+  /* ── Show / hide ──────────────────────────────────────── */
   function showDropdown() { dropdown.classList.remove("hidden"); }
   function hideDropdown()  { dropdown.classList.add("hidden"); activeIdx = -1; }
 
