@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"reflect"
 	"runtime"
 	"testing"
+	"unsafe"
 
 	"github.com/beego/beego/v2/core/logs"
 
@@ -18,7 +20,23 @@ import (
 func init() {
 	_, file, _, _ := runtime.Caller(0)
 	apppath, _ := filepath.Abs(filepath.Join(filepath.Dir(file), ".."))
+
+	beego.BConfig.WebConfig.Session.SessionOn = true
+	beego.BConfig.WebConfig.Session.SessionProvider = "memory"
+	beego.BConfig.WebConfig.Session.SessionName = "travelsphere_sess"
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600
+
 	beego.TestBeegoInit(apppath)
+	for _, route := range beego.BeeApp.Handlers.GetAllControllerInfo() {
+		field := reflect.ValueOf(route).Elem().FieldByName("sessionOn")
+		if field.IsValid() && field.Kind() == reflect.Bool {
+			if !field.CanSet() {
+				field = reflect.NewAt(field.Type(), unsafe.Pointer(field.UnsafeAddr())).Elem()
+			}
+			field.SetBool(true)
+		}
+	}
 }
 
 // TestBeego is a sample to run an endpoint test
