@@ -59,7 +59,7 @@ button { font-family: var(--font); cursor: pointer; border: none; background: no
   display: flex;
   align-items: center;
   height: 52px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
   gap: 8px;
@@ -156,6 +156,12 @@ button { font-family: var(--font); cursor: pointer; border: none; background: no
   margin-bottom: 32px;
 }
 
+/* ── Search Container Updates ── */
+.search-wrapper {
+  width: 100%;
+  max-width: 360px;
+}
+
 .search-label {
   display: block;
   font-size: 10px;
@@ -169,7 +175,6 @@ button { font-family: var(--font); cursor: pointer; border: none; background: no
 .search-box {
   position: relative;
   width: 100%;
-  max-width: 360px;
 }
 
 .search-input {
@@ -383,7 +388,9 @@ button { font-family: var(--font); cursor: pointer; border: none; background: no
   .hero-card      { padding: 28px 18px 36px; border-radius: var(--radius-md); }
   .hero-title     { font-size: 22px; }
   .hero-sub       { font-size: 12px; margin-bottom: 22px; }
-  .search-box     { max-width: 100%; }
+  
+  /* Update wrapper for mobile */
+  .search-wrapper { max-width: 100%; }
 
   /* Content */
   .page-content   { padding: 24px 14px 56px; }

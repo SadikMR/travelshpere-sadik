@@ -73,10 +73,14 @@ func (c *CountryController) Details() {
 	c.Data["Attractions"] = attractions
 	c.Data["IsWishlisted"] = isWishlisted
 	c.Data["WishlistID"] = wishlistID
+
 	c.Data["Title"] = country.Name
+	c.Data["ActivePage"] = "countries"
+
 	c.Data["FormattedPopulation"] = formatters.FormatPopulation(country.Population)
 	c.Data["FormattedLanguages"] = formatters.FormatLanguages(country.Languages)
 	c.Data["FormattedCurrency"] = formatters.FormatCurrency(country.Currency)
+
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "destination.tpl"
 }
