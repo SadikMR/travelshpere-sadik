@@ -57,6 +57,12 @@ func init() {
 	)
 
 	beego.Router(
+		"/api/countries/search",
+		&controllers.HomeController{},
+		"get:Search",
+	)
+
+	beego.Router(
 		"/api/countries/:slug",
 		&api.CountryController{},
 		"get:Detail",

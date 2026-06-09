@@ -30,7 +30,8 @@ func (c *CountryController) Get() {
 	}
 
 	c.Data["Countries"] = countries
-	c.Data["Title"] = "Country Explorer"
+	c.Data["Title"] = "Countries"
+	c.Data["ActivePage"] = "countries"
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "countries.tpl"
 }

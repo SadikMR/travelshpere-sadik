@@ -13,6 +13,7 @@ type WishlistController struct {
 func (c *WishlistController) Get() {
 	c.Data["Wishlists"] = services.ListWishlists(c.GetUsername())
 	c.Data["Title"] = "My Wishlist"
+	c.Data["ActivePage"] = "wishlist"
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "wishlist/index.tpl"
 }
