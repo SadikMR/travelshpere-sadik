@@ -263,6 +263,26 @@ func TestSSRInvalidCountrySearch(t *testing.T) {
 	assert.Contains(t, w.Body.String(), "invalid region")
 }
 
+func TestAuthLoginFormValidation(t *testing.T) {
+	form := strings.NewReader("username=")
+	req := httptest.NewRequest(http.MethodPost, "/login", form)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	w := httptest.NewRecorder()
+
+	beego.BeeApp.Handlers.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Contains(t, w.Body.String(), "Username is required")
+	assert.Contains(t, w.Body.String(), "Login")
+}
+
+func TestSSRUnknownCountryDetailsReturnsNotFound(t *testing.T) {
+	newMockRemoteServer(t)
+
+	w := doRequest(t, http.MethodGet, "/countries/nosuchcountry", "", nil)
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
 func TestAPIRoutes(t *testing.T) {
 	newMockRemoteServer(t)
 
@@ -379,17 +399,17 @@ func TestCountryAPIValidationAndDetail(t *testing.T) {
 func TestWishlistAPIUpdateDelete(t *testing.T) {
 	cookie := newAuthenticatedCookie(t, "sadik")
 
-	w := doRequest(t, http.MethodPost, "/api/wishlist", `{"country_name":"Bangladesh","note":"original note"}` , cookie)
+	w := doRequest(t, http.MethodPost, "/api/wishlist", `{"country_name":"Bangladesh","note":"original note"}`, cookie)
 	assert.Equal(t, http.StatusCreated, w.Code)
 
 	var created map[string]any
 	require.NoError(t, json.Unmarshal(w.Body.Bytes(), &created))
 	id := int(created["id"].(float64))
 
-	w2 := doRequest(t, http.MethodPut, "/api/wishlist/bad-id", `{"note":"updated note","status":"Visited"}` , cookie)
+	w2 := doRequest(t, http.MethodPut, "/api/wishlist/bad-id", `{"note":"updated note","status":"Visited"}`, cookie)
 	assert.Equal(t, http.StatusBadRequest, w2.Code)
 
-	w3 := doRequest(t, http.MethodPut, "/api/wishlist/"+strconv.Itoa(id), `{"note":"updated note","status":"Visited"}` , cookie)
+	w3 := doRequest(t, http.MethodPut, "/api/wishlist/"+strconv.Itoa(id), `{"note":"updated note","status":"Visited"}`, cookie)
 	assert.Equal(t, http.StatusOK, w3.Code)
 
 	var updated map[string]any
@@ -399,6 +419,22 @@ func TestWishlistAPIUpdateDelete(t *testing.T) {
 
 	w4 := doRequest(t, http.MethodDelete, "/api/wishlist/"+strconv.Itoa(id), "", cookie)
 	assert.Equal(t, http.StatusNoContent, w4.Code)
+}
+
+func TestWishlistAPIInvalidJsonPayload(t *testing.T) {
+	cookie := newAuthenticatedCookie(t, "sadik-2")
+
+	w := doRequest(t, http.MethodPut, "/api/wishlist/1", `{bad json`, cookie)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Contains(t, w.Body.String(), "invalid payload")
+}
+
+func TestWishlistAPIDeleteInvalidID(t *testing.T) {
+	cookie := newAuthenticatedCookie(t, "sadik-3")
+
+	w := doRequest(t, http.MethodDelete, "/api/wishlist/bad-id", "", cookie)
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	assert.Contains(t, w.Body.String(), "invalid id")
 }
 
 func TestAttractionAPIInvalidParams(t *testing.T) {
