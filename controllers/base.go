@@ -1,6 +1,10 @@
 package controllers
 
-import "github.com/beego/beego/v2/server/web"
+import (
+	"context"
+
+	"github.com/beego/beego/v2/server/web"
+)
 
 // BaseController is the shared base for all SSR controllers.
 // It populates session-based template data in Prepare().
@@ -10,7 +14,15 @@ type BaseController struct {
 
 // Prepare runs before every handler. Sets IsLoggedIn and Username for templates.
 func (c *BaseController) Prepare() {
-	username := c.GetSession("username")
+	if c.Data == nil {
+		c.Data = make(map[interface{}]interface{})
+	}
+
+	var username interface{}
+	if c.Ctx != nil && c.Ctx.Input != nil && c.Ctx.Input.CruSession != nil {
+		username = c.Ctx.Input.CruSession.Get(context.Background(), "username")
+	}
+
 	if u, ok := username.(string); ok && u != "" {
 		c.Data["IsLoggedIn"] = true
 		c.Data["Username"] = u
