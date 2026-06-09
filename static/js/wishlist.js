@@ -4,13 +4,18 @@
   const container = document.getElementById("wishlist-rows");
   if (!container) return;
 
-  // ── Helper: call API and return JSON ─────────────────────
+  // ── API helper ────────────────────────────────────────────
   async function api(url, method, body) {
     const opts = {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
     };
-    if (body) opts.body = JSON.stringify(body);
+
+    if (body) {
+      opts.body = JSON.stringify(body);
+    }
 
     const resp = await fetch(url, opts);
 
@@ -24,28 +29,43 @@
       throw new Error(text || resp.statusText);
     }
 
-    // 204 No Content (delete)
-    if (resp.status === 204) return true;
+    if (resp.status === 204) {
+      return true;
+    }
 
     return resp.json();
   }
 
-  // ── Helper: reload only the rows section via SSR partial ─
+  // ── Refresh rows partial ──────────────────────────────────
   async function refreshRows() {
     const resp = await fetch("/wishlist/rows");
-    if (resp.ok) {
-      container.innerHTML = await resp.text();
-      bindEvents();
-    }
+
+    if (!resp.ok) return;
+
+    container.innerHTML = await resp.text();
+    bindEvents();
   }
 
-  // ── Save note + status (AJAX, no page reload) ──────────
+  // ── Button states ─────────────────────────────────────────
+  function setSaved(btn) {
+    btn.textContent = "Saved";
+    btn.classList.add("wl-btn-save--saved");
+  }
+
+  function setUnsaved(btn) {
+    btn.textContent = "Save";
+    btn.classList.remove("wl-btn-save--saved");
+  }
+
+  // ── Save wishlist entry ───────────────────────────────────
   function onSave(e) {
-    const btn = e.target;
+    const btn = e.currentTarget;
     const id = btn.dataset.id;
+
     const noteInput = container.querySelector(
       `.js-note-input[data-id="${id}"]`
     );
+
     const statusSelect = container.querySelector(
       `.js-status-select[data-id="${id}"]`
     );
@@ -53,34 +73,73 @@
     const note = noteInput ? noteInput.value : "";
     const status = statusSelect ? statusSelect.value : "Planned";
 
-    api(`/api/wishlist/${id}`, "PUT", { note, status })
-      .then(() => refreshRows())
-      .catch((err) => console.error("Save failed:", err));
+    api(`/api/wishlist/${id}`, "PUT", {
+      note,
+      status,
+    })
+      .then(() => {
+        setSaved(btn);
+      })
+      .catch((err) => {
+        console.error("Save failed:", err);
+      });
   }
 
-  // ── Delete (AJAX, row removed without page reload) ──────
+  // ── Delete wishlist entry ─────────────────────────────────
   function onDelete(e) {
-    const btn = e.target;
+    const btn = e.currentTarget;
     const id = btn.dataset.id;
 
-    if (!confirm("Remove this entry from your wishlist?")) return;
+    if (!confirm("Remove this entry from your wishlist?")) {
+      return;
+    }
 
     api(`/api/wishlist/${id}`, "DELETE")
-      .then(() => refreshRows())
-      .catch((err) => console.error("Delete failed:", err));
+      .then(() => {
+        refreshRows();
+      })
+      .catch((err) => {
+        console.error("Delete failed:", err);
+      });
   }
 
-  // ── Bind all event listeners ────────────────────────────
+  // ── Mark row dirty after edits ────────────────────────────
+  function onRowChange(e) {
+    const id = e.target.dataset.id;
+
+    if (!id) return;
+
+    const btn = container.querySelector(
+      `.js-save-note[data-id="${id}"]`
+    );
+
+    if (btn) {
+      setUnsaved(btn);
+    }
+  }
+
+  // ── Bind events ───────────────────────────────────────────
   function bindEvents() {
-    container.querySelectorAll(".js-save-note").forEach((el) => {
-      el.addEventListener("click", onSave);
+    container.querySelectorAll(".js-save-note").forEach((btn) => {
+      btn.removeEventListener("click", onSave);
+      btn.addEventListener("click", onSave);
     });
 
-    container.querySelectorAll(".js-delete-btn").forEach((el) => {
-      el.addEventListener("click", onDelete);
+    container.querySelectorAll(".js-delete-btn").forEach((btn) => {
+      btn.removeEventListener("click", onDelete);
+      btn.addEventListener("click", onDelete);
     });
+
+    container
+      .querySelectorAll(".js-note-input, .js-status-select")
+      .forEach((el) => {
+        el.removeEventListener("input", onRowChange);
+        el.removeEventListener("change", onRowChange);
+
+        el.addEventListener("input", onRowChange);
+        el.addEventListener("change", onRowChange);
+      });
   }
 
-  // ── Initial bind ────────────────────────────────────────
   bindEvents();
 })();
