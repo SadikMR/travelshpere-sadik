@@ -1,12 +1,23 @@
+# Application
 appname = travelsphere
 httpport = 8080
 runmode = dev
 
-sessionon        = true
-sessionname      = travelsphere_sess
-sessionprovider  = memory        # ← this was missing
+# Session
+sessionon = true
+sessionname = travelsphere_sess
+sessionprovider = memory
+sessiongcmaxlifetime = 3600
+sessioncookielifetime = 3600
 
+# Request handling
 copyrequestbody = true
+
+# External APIs
 opentripApi = YOUR_OPENTRIPMAP_API_KEY
+
 restcountriesBaseURL = https://restcountries.com/v3.1
 opentripBaseURL = https://api.opentripmap.com/0.1/en/places
+
+# Static files
+staticdir = static

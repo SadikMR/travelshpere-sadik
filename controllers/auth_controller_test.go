@@ -33,4 +33,3 @@ func TestAuthControllerLoginShowsErrorWhenUsernameIsMissing(t *testing.T) {
 	assert.Equal(t, "", ctrl.Layout)
 	assert.Equal(t, "Username is required", ctrl.Data["Error"])
 }
-
