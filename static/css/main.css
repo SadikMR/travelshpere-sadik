@@ -185,7 +185,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
 
 .hero-card {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(140deg, var(--hero-from) 0%, var(--hero-mid) 45%, var(--hero-to) 100%);
   border-radius: var(--radius-xl);
   padding: 56px 44px 64px;
@@ -257,7 +257,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
   margin-bottom: 8px;
 }
 
-.search-box { position: relative; width: 100%; }
+.search-box { position: relative; width: 100%; z-index: 9999; }
 
 .search-input {
   width: 100%;
@@ -290,7 +290,7 @@ button { font-family: var(--font-body); cursor: pointer; border: none; backgroun
   box-shadow: var(--shadow-lg);
   max-height: 256px;
   overflow-y: auto;
-  z-index: 600;
+  z-index: 9999;
 }
 .search-dropdown.hidden { display: none; }
 
