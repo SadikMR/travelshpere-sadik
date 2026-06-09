@@ -30,4 +30,3 @@ func TestBaseControllerPrepareSetsLoggedOutWhenNoSession(t *testing.T) {
 	assert.False(t, ctrl.Data["IsLoggedIn"].(bool))
 	assert.Equal(t, "", ctrl.Data["Username"])
 }
-
