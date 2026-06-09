@@ -14,6 +14,7 @@ func (c *DashboardController) Get() {
 	c.Data["Summary"] = services.GetDashboardSummary(username)
 	c.Data["Destinations"] = services.ListWishlists(username)
 	c.Data["Title"] = "Travel Dashboard"
+	c.Data["ActivePage"] = "dashboard"
 	c.Layout = "layouts/base.tpl"
 	c.TplName = "dashboard.tpl"
 }

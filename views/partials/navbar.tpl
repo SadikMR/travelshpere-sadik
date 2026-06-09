@@ -1,32 +1,28 @@
-<nav class="bg-white shadow-sm border-b">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+{{define "partials/navbar.tpl"}}
+<nav class="navbar">
+  <div class="nav-container">
 
-        <a href="/" class="text-xl font-bold text-blue-600">
-            TravelSphere
-        </a>
+    <a class="nav-brand" href="/">TravelSphere</a>
 
-        <div class="flex items-center gap-6">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
 
-            <a href="/" class="hover:text-blue-600">
-                Home
-            </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/"          class="nav-link{{if eq .ActivePage "home"}}      active{{end}}">Home</a></li>
+      <li><a href="/countries" class="nav-link{{if eq .ActivePage "countries"}} active{{end}}">Countries</a></li>
+      <li><a href="/wishlist"  class="nav-link{{if eq .ActivePage "wishlist"}}  active{{end}}">Wishlist</a></li>
+      <li><a href="/dashboard" class="nav-link{{if eq .ActivePage "dashboard"}} active{{end}}">Dashboard</a></li>
+    </ul>
 
-            <a href="/countries" class="hover:text-blue-600">
-                Countries
-            </a>
-
-            <a href="/wishlist" class="hover:text-blue-600">
-                Wishlist
-            </a>
-
-            <button
-                id="logout-btn"
-                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                Logout
-            </button>
-
-        </div>
+    <div class="nav-right">
+      {{if .IsLoggedIn}}
+        <a href="/logout" class="nav-login">Logout</a>
+      {{else}}
+        <a href="/login" class="nav-login">Login</a>
+      {{end}}
     </div>
-</nav>
 
-<script src="/static/js/logout.js"></script>
+  </div>
+</nav>
+{{end}}
