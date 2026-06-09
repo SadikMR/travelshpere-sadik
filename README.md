@@ -47,9 +47,22 @@ touch conf/app.conf
 
 ## Run locally
 
+Install dependencies:
+
 ```bash
 go mod download
+```
+
+Run with Go:
+
+```bash
 go run main.go
+```
+
+Or run with Bee (recommended for development):
+
+```bash
+bee run
 ```
 
 Open the application at:
