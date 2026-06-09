@@ -1,96 +1,77 @@
-<div class="max-w-4xl mx-auto px-5 py-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/destination.css">
 
-  <!-- Hero Card -->
-  <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
+<div class="dest-page">
 
-    <!-- Region badge -->
-    <span class="inline-block text-xs font-bold uppercase tracking-widest text-blue-500 bg-blue-50 px-3 py-1 rounded-full mb-4">
-      {{.Country.Region}}
-    </span>
+  <!-- Hero card -->
+  <div class="dest-hero">
+    <span class="dest-region-badge">{{.Country.Region}}</span>
 
-    <!-- Flag + Name -->
-    <div class="flex items-center gap-6 mb-6">
+    <div class="dest-hero__top">
       <img
+        class="dest-flag"
         src="{{.Country.Flag}}"
         alt="Flag of {{.Country.Name}}"
-        class="w-32 h-24 object-cover rounded-xl shadow-sm flex-shrink-0"
       />
       <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">{{.Country.Name}}</h1>
-        <p class="text-sm text-gray-400 mt-1">{{.Country.SubRegion}}</p>
+        <h1 class="dest-name">{{.Country.Name}}</h1>
+        <p class="dest-subregion">{{.Country.SubRegion}}</p>
       </div>
     </div>
 
-    <!-- Stats row -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 pt-4 border-t border-gray-100">
-
-      <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Capital</span>
-        <span class="text-sm font-medium text-gray-800">{{.Country.Capital}}</span>
+    <div class="dest-stats">
+      <div>
+        <span class="dest-stat__label">Capital</span>
+        <span class="dest-stat__value">{{.Country.Capital}}</span>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Population</span>
-        <span class="text-sm font-medium text-gray-800">
-          {{.FormattedPopulation}}
-        </span>
+      <div>
+        <span class="dest-stat__label">Population</span>
+        <span class="dest-stat__value" id="js-population" data-pop="{{.Country.Population}}">{{.Country.Population}}</span>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Region</span>
-        <span class="text-sm font-medium text-gray-800">{{.Country.Region}}</span>
+      <div>
+        <span class="dest-stat__label">Region</span>
+        <span class="dest-stat__value">{{.Country.Region}}</span>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Currency</span>
-        <span class="text-sm font-medium text-gray-800">{{.FormattedCurrency}}</span>
+      <div>
+        <span class="dest-stat__label">Currency</span>
+        <span class="dest-stat__value">{{.Country.Currency}}</span>
       </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="text-xs font-semibold uppercase tracking-widest text-gray-400">Languages</span>
-        <span class="text-sm font-medium text-gray-800">
-          {{.FormattedLanguages}}
-        </span>
+      <div>
+        <span class="dest-stat__label">Languages</span>
+        <span class="dest-stat__value">{{range $i, $l := .Country.Languages}}{{if $i}}, {{end}}{{$l}}{{end}}</span>
       </div>
-
     </div>
   </div>
 
-  <!-- Wishlist Button -->
-  <div class="mb-8">
+  <!-- Wishlist button -->
+  <div class="dest-wishlist-wrap">
     <button
       id="wishlist-btn"
+      class="dest-wishlist-btn{{if .IsWishlisted}} added{{end}}"
       data-country="{{.Country.Name}}"
       data-wishlisted="{{.IsWishlisted}}"
-      data-wishlist-id="{{.WishlistID}}"
-      class="px-5 py-2 rounded-lg border-2 text-sm font-semibold transition-all duration-150
-             {{if .IsWishlisted}}bg-gray-800 text-white border-gray-800{{else}}border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white{{end}}"
     >
-      {{if .IsWishlisted}}✓ Added to Wishlist{{else}}+ Add to Wishlist{{end}}
+      {{if .IsWishlisted}}&#10003; Added to Wishlist{{else}}+ Add to Wishlist{{end}}
     </button>
-    <div id="wishlist-feedback" class="mt-2 text-sm"></div>
+    <span id="wishlist-feedback" class="dest-wishlist-feedback"></span>
   </div>
 
-  <!-- Bottom Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- Bottom panels -->
+  <div class="dest-bottom">
 
-    <!-- Travel Weather -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-5">
-      <h2 class="text-base font-bold text-gray-900 mb-4">Travel weather</h2>
-      <div id="weather-content"
-           class="text-sm text-gray-400 bg-gray-50 rounded-lg p-4 leading-relaxed">
+    <div class="dest-panel">
+      <h2 class="dest-panel__title">Travel weather</h2>
+      <div id="weather-content" class="dest-weather-note">
         Weather data is optional. Add
-        <code class="text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">WEATHER_API_KEY</code>
-        to your
-        <code class="text-xs bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded font-mono">.env</code>
-        file to enable live conditions.
+        <code>WEATHER_API_KEY</code>
+        to your <code>.env</code> file to enable live conditions.
       </div>
     </div>
 
-    <!-- Attractions -->
-    <div class="bg-white border border-gray-200 rounded-2xl p-5">
-      <h2 class="text-base font-bold text-gray-900 mb-4">Attractions &amp; landmarks</h2>
-      <div id="attractions-list" class="flex flex-col gap-2">
+    <div class="dest-panel">
+      <h2 class="dest-panel__title">Attractions &amp; landmarks</h2>
+      <div id="attractions-list" class="dest-attractions">
         <!-- Injected by JS -->
       </div>
     </div>

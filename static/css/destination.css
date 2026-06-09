@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --ts-accent:   #E8440A;
+  --ts-surface:  #F7F5F0;
+  --ts-card:     #FFFFFF;
+  --ts-text:     #0F0E0C;
+  --ts-muted:    #6B6860;
+  --ts-border:   #E5E2DA;
+}
+
+/* ── Page ────────────────────────────────────────────── */
+.dest-page {
+  max-width: 860px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  background: var(--ts-surface);
+  min-height: 100vh;
+}
+
+/* ── Hero card ───────────────────────────────────────── */
+.dest-hero {
+  background: var(--ts-card);
+  border: 1px solid var(--ts-border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.dest-region-badge {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1D6FCC;
+  background: #E8F1FB;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.dest-hero__top {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.dest-flag {
+  width: 120px;
+  height: 85px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: var(--ts-surface);
+}
+
+.dest-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  letter-spacing: -0.03em;
+  color: var(--ts-text);
+  margin: 0 0 4px;
+  line-height: 1.1;
+}
+
+.dest-subregion {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ts-muted);
+}
+
+/* ── Stats row ───────────────────────────────────────── */
+.dest-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--ts-border);
+}
+
+@media (max-width: 640px) {
+  .dest-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dest-hero__top {
+    gap: 1rem;
+  }
+  .dest-flag {
+    width: 90px;
+    height: 64px;
+  }
+}
+
+.dest-stat__label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ts-muted);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.dest-stat__value {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--ts-text);
+  word-break: break-word;
+}
+
+/* ── Wishlist button ─────────────────────────────────── */
+.dest-wishlist-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.dest-wishlist-btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1.5px solid var(--ts-text);
+  background: transparent;
+  color: var(--ts-text);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dest-wishlist-btn:hover,
+.dest-wishlist-btn.added {
+  background: var(--ts-text);
+  color: #fff;
+}
+
+.dest-wishlist-feedback {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  margin-left: 10px;
+}
+
+/* ── Bottom grid ─────────────────────────────────────── */
+.dest-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .dest-bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dest-panel {
+  background: var(--ts-card);
+  border: 1px solid var(--ts-border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.dest-panel__title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ts-text);
+  margin: 0 0 0.85rem;
+}
+
+/* ── Weather placeholder ─────────────────────────────── */
+.dest-weather-note {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: var(--ts-muted);
+  background: var(--ts-surface);
+  border-radius: 8px;
+  padding: 12px 14px;
+  line-height: 1.6;
+}
+
+.dest-weather-note code {
+  font-size: 0.72rem;
+  background: var(--ts-border);
+  color: var(--ts-text);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* ── Attractions list ────────────────────────────────── */
+.dest-attractions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dest-attraction-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--ts-surface);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.dest-attraction-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--ts-text);
+  white-space: nowrap;
+  flex-shrink: 0;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dest-attraction-tags {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7rem;
+  color: var(--ts-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.dest-empty {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--ts-muted);
+  background: var(--ts-surface);
+  border-radius: 8px;
+  padding: 14px;
+}
