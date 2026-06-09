@@ -1,81 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
 :root {
-  --wl-accent:   #E8440A;
-  --wl-surface:  #EEEDF5;
-  --wl-card:     #FFFFFF;
-  --wl-text:     #0F0E0C;
-  --wl-muted:    #7B7A85;
-  --wl-border:   #E2E0EC;
-  --wl-focus:    #6B5EE4;
+  --wl-accent: #E8440A;
+  --db-surface:  #EEEDF5;
+  --wl-card: #FFFFFF;
+  --wl-text: #0F0E0C;
+  --wl-muted: #7B7A85;
+  --wl-border: #E2E0EC;
+  --wl-focus: #6B5EE4;
 }
 
-/* ── Page ─────────────────────────────────────────────── */
+/* ── Page ───────────────────────────────────────────── */
+
 .wl-page {
-  max-width: 860px;
+  max-width: 1200px;
   width: 100%;
-  box-sizing: border-box;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
-  background: var(--wl-surface);
+  box-sizing: border-box;
+  background: var(--db-surface);
   min-height: 100vh;
 }
 
-/* ── Header ───────────────────────────────────────────── */
+/* ── Header ─────────────────────────────────────────── */
+
 .wl-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 800;
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  letter-spacing: -0.03em;
   color: var(--wl-text);
   margin: 0 0 0.35rem;
 }
 
 .wl-subtitle {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.83rem;
+  font-size: 0.9rem;
   color: var(--wl-muted);
-  line-height: 1.55;
+  line-height: 1.6;
   margin: 0 0 1.5rem;
-  max-width: 440px;
+  max-width: 500px;
 }
 
-/* ── Table card ───────────────────────────────────────── */
+/* ── Card ───────────────────────────────────────────── */
+
 .wl-card {
   background: var(--wl-card);
   border: 1px solid var(--wl-border);
-  border-radius: 12px;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
+  border-radius: 16px;
+  overflow-x: auto;
+  box-shadow: 0 2px 12px rgba(15, 14, 12, 0.04);
 }
 
-/* ── Table ────────────────────────────────────────────── */
+/* ── Table ──────────────────────────────────────────── */
+
 .wl-table {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
-/* Column widths — match the PNG proportions */
-.wl-table colgroup .col-country  { width: 18%; }
-.wl-table colgroup .col-note     { width: 30%; }
-.wl-table colgroup .col-status   { width: 22%; }
-.wl-table colgroup .col-actions  { width: 30%; }
+/* Column widths */
 
-/* ── Header row ───────────────────────────────────────── */
+.col-country {
+  width: 18%;
+}
+
+.col-note {
+  width: 30%;
+}
+
+.col-status {
+  width: 22%;
+}
+
+.col-actions {
+  width: 30%;
+}
+
+/* ── Header Row ─────────────────────────────────────── */
+
 .wl-table thead tr {
   background: var(--wl-surface);
 }
 
 .wl-table thead th {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.63rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--wl-muted);
-  padding: 10px 16px;
+  padding: 12px 16px;
   text-align: left;
 }
 
@@ -83,25 +96,26 @@
   text-align: right;
 }
 
-/* ── Body rows ────────────────────────────────────────── */
+/* ── Body Rows ──────────────────────────────────────── */
+
 .wl-table tbody tr {
   border-top: 1px solid var(--wl-border);
 }
 
 .wl-table tbody tr:hover {
-  background: #FAFAFD;
+  background: #fafafd;
 }
 
 .wl-table tbody td {
-  padding: 10px 16px;
+  padding: 12px 16px;
   vertical-align: middle;
 }
 
-/* Country cell */
+/* ── Country Link ───────────────────────────────────── */
+
 .wl-country-link {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: var(--wl-text);
   text-decoration: none;
 }
@@ -110,11 +124,11 @@
   color: var(--wl-accent);
 }
 
-/* Note input */
+/* ── Note Input ─────────────────────────────────────── */
+
 .wl-note-input {
   width: 100%;
   box-sizing: border-box;
-  font-family: 'DM Sans', sans-serif;
   font-size: 0.82rem;
   color: var(--wl-text);
   background: #fff;
@@ -126,7 +140,7 @@
 }
 
 .wl-note-input::placeholder {
-  color: #C0BDD0;
+  color: #c0bdd0;
 }
 
 .wl-note-input:focus {
@@ -134,11 +148,11 @@
   box-shadow: 0 0 0 3px rgba(107, 94, 228, 0.08);
 }
 
-/* Status select */
+/* ── Status Select ──────────────────────────────────── */
+
 .wl-status-select {
   width: 100%;
   box-sizing: border-box;
-  font-family: 'DM Sans', sans-serif;
   font-size: 0.82rem;
   color: var(--wl-text);
   background: #fff;
@@ -149,7 +163,9 @@
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
+
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237B7A85' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
   background-repeat: no-repeat;
   background-position: right 10px center;
   transition: border-color 0.15s;
@@ -160,17 +176,18 @@
   box-shadow: 0 0 0 3px rgba(107, 94, 228, 0.08);
 }
 
-/* Actions cell */
+/* ── Actions ────────────────────────────────────────── */
+
 .wl-actions {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
   gap: 8px;
 }
 
-/* Save button — solid */
+/* Save Button */
+
 .wl-btn-save {
-  font-family: 'DM Sans', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   padding: 6px 14px;
@@ -187,9 +204,18 @@
   opacity: 0.88;
 }
 
-/* Delete button — outlined */
+/* Saved State */
+
+.wl-btn-save--saved {
+  background: #888780;
+  border-color: #888780;
+  opacity: 1;
+  cursor: default;
+}
+
+/* Delete Button */
+
 .wl-btn-delete {
-  font-family: 'DM Sans', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   padding: 6px 14px;
@@ -207,13 +233,13 @@
   color: #fff;
 }
 
-/* ── Empty state ──────────────────────────────────────── */
+/* ── Empty State ────────────────────────────────────── */
+
 .wl-empty {
   text-align: center;
   padding: 3rem 1rem;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9rem;
   color: var(--wl-muted);
+  font-size: 0.9rem;
 }
 
 .wl-empty a {
@@ -226,23 +252,41 @@
   text-decoration: underline;
 }
 
-.wl-btn-save--saved {
-  opacity: 0.8;
-}
+/* ── Tablet ─────────────────────────────────────────── */
 
-/* ── Responsive ───────────────────────────────────────── */
-@media (max-width: 600px) {
-  .wl-table { table-layout: auto; }
+@media (max-width: 768px) {
+  .wl-page {
+    padding: 1rem;
+  }
+
   .wl-table thead th,
-  .wl-table tbody td { padding: 8px 10px; }
+  .wl-table tbody td {
+    padding: 10px;
+  }
+
   .wl-btn-save,
-  .wl-btn-delete { padding: 5px 10px; }
+  .wl-btn-delete {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .wl-actions {
+    gap: 6px;
+  }
 }
 
-/* ── Save button saved state ──────────────────────────── */
-.wl-btn-save--saved {
-  background: #888780;
-  border-color: #888780;
-  opacity: 1;
-  cursor: default;
+/* ── Small Mobile ───────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .wl-page {
+    padding: 0.75rem;
+  }
+
+  .wl-title {
+    font-size: 1.5rem;
+  }
+
+  .wl-subtitle {
+    font-size: 0.85rem;
+  }
 }

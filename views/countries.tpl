@@ -6,7 +6,7 @@
 
   <div style="margin-bottom:1.5rem;">
     <h1 class="ts-title">Country Explorer</h1>
-    <p class="ts-subtitle">Browse every destination on first load. Search and filter update only the results below — no full page reload.</p>
+    <p class="ts-subtitle">Browse every destination. Search and filter update only the results below.</p>
   </div>
 
   <!-- Filter bar: ALWAYS side-by-side via inline flex -->

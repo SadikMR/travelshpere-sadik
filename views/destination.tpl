@@ -1,5 +1,4 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/destination.css">
 
 <div class="dest-page">
@@ -61,14 +60,16 @@
   <div class="dest-bottom">
 
     <div class="dest-panel">
-      <h2 class="dest-panel__title">Travel weather</h2>
-      <div id="weather-content" class="dest-weather-note">
-        Weather data is optional. Add
-        <code>WEATHER_API_KEY</code>
-        to your <code>.env</code> file to enable live conditions.
-      </div>
-    </div>
+  <h2 class="dest-panel__title">Travel Weather</h2>
 
+  <div id="weather-content" class="dest-weather-note">
+      <div><strong>Current Conditions</strong></div>
+      <div>🌤️ Partly Cloudy</div>
+      <div>Temperature: 28°C</div>
+      <div>Humidity: 68%</div>
+      <div>Wind: 12 km/h</div>
+    </div>
+  </div>
     <div class="dest-panel">
       <h2 class="dest-panel__title">Attractions &amp; landmarks</h2>
       <div id="attractions-list" class="dest-attractions">

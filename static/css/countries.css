@@ -18,13 +18,12 @@
   overflow-x: hidden;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
-  background: var(--ts-surface);
   min-height: 100vh;
 }
 
 /* ── Typography ───────────────────────────────────────── */
 .ts-title {
-  font-family: 'Syne', sans-serif;
+   font-family: 'DM Sans', sans-serif;
   font-weight: 800;
   font-size: clamp(1.6rem, 4vw, 2.4rem);
   letter-spacing: -0.03em;

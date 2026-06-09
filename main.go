@@ -15,6 +15,7 @@ func main() {
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600
 	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 3600
 	beego.BConfig.WebConfig.ViewsPath = "views"
+	beego.SetStaticPath("/static", "static")
 
 	// Register template helper: {{.Name | slugify}}
 	beego.AddFuncMap("slugify", func(s string) string {

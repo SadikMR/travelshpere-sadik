@@ -2,7 +2,7 @@
 
 :root {
   --ts-accent:   #E8440A;
-  --ts-surface:  #F7F5F0;
+  --db-surface:  #EEEDF5;
   --ts-card:     #FFFFFF;
   --ts-text:     #0F0E0C;
   --ts-muted:    #6B6860;
@@ -11,12 +11,12 @@
 
 /* ── Page ────────────────────────────────────────────── */
 .dest-page {
-  max-width: 860px;
+  max-width: 1200px;
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
   padding: 2rem 1.25rem 4rem;
-  background: var(--ts-surface);
+  background: var(--db-surface);
   min-height: 100vh;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .dest-name {
-  font-family: 'Syne', sans-serif;
+   font-family: 'DM Sans', sans-serif;
   font-weight: 800;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   letter-spacing: -0.03em;
@@ -170,7 +170,7 @@
 }
 
 .dest-panel__title {
-  font-family: 'Syne', sans-serif;
+   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   font-size: 0.9rem;
   color: var(--ts-text);
