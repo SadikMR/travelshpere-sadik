@@ -1,23 +1,23 @@
-# Application
 appname = travelsphere
 httpport = 8080
 runmode = dev
-
-# Session
+ 
 sessionon = true
 sessionname = travelsphere_sess
 sessionprovider = memory
 sessiongcmaxlifetime = 3600
 sessioncookielifetime = 3600
-
-# Request handling
+ 
 copyrequestbody = true
 
-# External APIs
-opentripApi = YOUR_OPENTRIPMAP_API_KEY
-
-restcountriesBaseURL = https://restcountries.com/v3.1
+# OpenTripMap API Configuration
+# Get your key here: https://opentripmap.io/product
 opentripBaseURL = https://api.opentripmap.com/0.1/en/places
+opentripApi = your_opentripmap_api_key_here
 
-# Static files
+# REST Countries v5 API Configuration
+# Get your key here: https://restcountries.com/
+restcountriesBaseURL = https://api.restcountries.com/countries/v5
+restcountriesAPIKey = your_restcountries_api_key_here
+ 
 staticdir = static
