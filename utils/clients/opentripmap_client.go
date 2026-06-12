@@ -26,7 +26,7 @@ func GetAttractions(
 	opentripBaseURL, _ := beego.AppConfig.String("opentripBaseURL")
 
 	url := fmt.Sprintf(
-		"%s/radius?radius=10000&lat=%f&lon=%f&kinds=museums,historic,architecture,monuments,cultural&apikey=%s",
+		"%s/radius?radius=10000&lat=%f&lon=%f&kinds=museums,historic,architecture,monuments,cultural&format=geojson&apikey=%s",
 		opentripBaseURL,
 		lat,
 		lon,

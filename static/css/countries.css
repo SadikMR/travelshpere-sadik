@@ -280,3 +280,84 @@
   font-size: 1rem;
   color: var(--ts-muted);
 }
+
+/* ── Pagination ──────────────────────────────────────── */
+.ts-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2rem;
+  padding: 0.5rem 0 1rem;
+  flex-wrap: wrap;
+}
+
+.ts-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ts-text);
+  background: var(--ts-card);
+  border: 1px solid var(--ts-border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ts-page-btn:hover:not(.disabled) {
+  background: var(--ts-accent);
+  border-color: var(--ts-accent);
+  color: #fff;
+}
+
+.ts-page-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ts-page-btn svg {
+  flex-shrink: 0;
+}
+
+.ts-page-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  min-width: 36px;
+  height: 36px;
+  color: var(--ts-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 4px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ts-page-num:hover {
+  background: var(--ts-surface);
+  border-color: var(--ts-border);
+}
+
+.ts-page-num.active {
+  background: var(--ts-accent);
+  color: #fff;
+  border-color: var(--ts-accent);
+  font-weight: 600;
+  cursor: default;
+}
+
+.ts-page-ellipsis {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: var(--ts-muted);
+  padding: 0 2px;
+  user-select: none;
+}

@@ -11,37 +11,58 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// mockCountryServer returns a test server that serves country JSON.
+// mockCountryServer returns a test server that serves country JSON in v5 API format.
 func mockCountryServer() *httptest.Server {
+	callCount := 0
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{
-				"name":       map[string]string{"common": "Bangladesh"},
-				"region":     "Asia",
-				"subregion":  "Southern Asia",
-				"population": 170000000,
-				"capital":    []string{"Dhaka"},
-				"latlng":     []float64{23.685, 90.356},
-				"flags":      map[string]string{"png": "https://example.com/bd.png"},
-			},
-			{
-				"name":       map[string]string{"common": "Japan"},
-				"region":     "Asia",
-				"subregion":  "Eastern Asia",
-				"population": 125000000,
-				"capital":    []string{"Tokyo"},
-				"latlng":     []float64{36.0, 138.0},
-				"flags":      map[string]string{"png": "https://example.com/jp.png"},
-			},
-			{
-				"name":       map[string]string{"common": "France"},
-				"region":     "Europe",
-				"subregion":  "Western Europe",
-				"population": 67000000,
-				"capital":    []string{"Paris"},
-				"latlng":     []float64{46.0, 2.0},
-				"flags":      map[string]string{"png": "https://example.com/fr.png"},
+		callCount++
+		// First call returns data, second call returns empty to stop pagination
+		if callCount > 1 {
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"data": map[string]interface{}{
+					"objects": []interface{}{},
+				},
+			})
+			return
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": map[string]interface{}{
+				"objects": []map[string]interface{}{
+					{
+						"names":      map[string]string{"common": "Bangladesh", "official": "People's Republic of Bangladesh"},
+						"region":     "Asia",
+						"subregion":  "Southern Asia",
+						"population": 170000000,
+						"capitals":   []map[string]interface{}{{"name": "Dhaka", "primary": true, "coordinates": map[string]float64{"lat": 23.7104, "lng": 90.4074}}},
+						"geography":  map[string]interface{}{"coordinates": map[string]float64{"lat": 23.685, "lng": 90.356}},
+						"flag":       map[string]string{"emoji": "🇧🇩", "url_png": "https://example.com/bd.png", "url_svg": ""},
+						"currencies": []map[string]string{{"code": "BDT", "name": "Bangladeshi taka", "symbol": "৳"}},
+						"languages":  []map[string]string{{"bcp47": "bn", "name": "Bengali", "native_name": "বাংলা"}},
+					},
+					{
+						"names":      map[string]string{"common": "Japan", "official": "Japan"},
+						"region":     "Asia",
+						"subregion":  "Eastern Asia",
+						"population": 125000000,
+						"capitals":   []map[string]interface{}{{"name": "Tokyo", "primary": true, "coordinates": map[string]float64{"lat": 35.6762, "lng": 139.6503}}},
+						"geography":  map[string]interface{}{"coordinates": map[string]float64{"lat": 36.0, "lng": 138.0}},
+						"flag":       map[string]string{"emoji": "🇯🇵", "url_png": "https://example.com/jp.png", "url_svg": ""},
+						"currencies": []map[string]string{{"code": "JPY", "name": "Japanese yen", "symbol": "¥"}},
+						"languages":  []map[string]string{{"bcp47": "ja", "name": "Japanese", "native_name": "日本語"}},
+					},
+					{
+						"names":      map[string]string{"common": "France", "official": "French Republic"},
+						"region":     "Europe",
+						"subregion":  "Western Europe",
+						"population": 67000000,
+						"capitals":   []map[string]interface{}{{"name": "Paris", "primary": true, "coordinates": map[string]float64{"lat": 48.8566, "lng": 2.3522}}},
+						"geography":  map[string]interface{}{"coordinates": map[string]float64{"lat": 46.0, "lng": 2.0}},
+						"flag":       map[string]string{"emoji": "🇫🇷", "url_png": "https://example.com/fr.png", "url_svg": ""},
+						"currencies": []map[string]string{{"code": "EUR", "name": "Euro", "symbol": "€"}},
+						"languages":  []map[string]string{{"bcp47": "fr", "name": "French", "native_name": "Français"}},
+					},
+				},
 			},
 		})
 	}))

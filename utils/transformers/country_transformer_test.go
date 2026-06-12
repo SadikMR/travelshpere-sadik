@@ -8,22 +8,57 @@ import (
 )
 
 func TestToCountryBasicFields(t *testing.T) {
+	// Initialize the structural fields matching the v5 DTO structure exactly
 	input := dto.RestCountryDTO{
-		Name:       struct{ Common string `json:"common"` }{Common: "Bangladesh"},
+		Names: struct {
+			Common   string `json:"common"`
+			Official string `json:"official"`
+		}{Common: "Bangladesh"},
 		Region:     "Asia",
 		SubRegion:  "Southern Asia",
 		Population: 170_000_000,
-		Capital:    []string{"Dhaka"},
-		LatLng:     []float64{23.685, 90.356},
+		Capitals: []struct {
+			Name        string `json:"name"`
+			Primary     bool   `json:"primary"`
+			Coordinates struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			} `json:"coordinates"`
+		}{
+			{Name: "Dhaka", Primary: true},
+		},
+		Geography: struct {
+			Coordinates struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			} `json:"coordinates"`
+		}{
+			Coordinates: struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			}{Lat: 23.685, Lng: 90.356},
+		},
 	}
-	input.Flags.PNG = "https://example.com/flag.png"
-	input.Currencies = map[string]struct {
-		Name string `json:"name"`
+
+	// Update to the new v5 Flag structure
+	input.Flag.URLPNG = "https://example.com/flag.png"
+
+	// CHANGED: Match the new array structure for Currencies
+	input.Currencies = []struct {
+		Code   string `json:"code"`
+		Name   string `json:"name"`
+		Symbol string `json:"symbol"`
 	}{
-		"BDT": {Name: "Taka"},
+		{Code: "BDT", Name: "Taka", Symbol: "৳"},
 	}
-	input.Languages = map[string]string{
-		"ben": "Bengali",
+
+	// CHANGED: Match the new array structure for Languages
+	input.Languages = []struct {
+		BCP47  string `json:"bcp47"`
+		Name   string `json:"name"`
+		Native string `json:"native_name"`
+	}{
+		{BCP47: "bn", Name: "Bengali", Native: "বাংলা"},
 	}
 
 	country := ToCountry(input)
@@ -41,8 +76,16 @@ func TestToCountryBasicFields(t *testing.T) {
 }
 
 func TestToCountryEmptyCapital(t *testing.T) {
+	// CHANGED: Added Coordinates to the anonymous struct to match the updated DTO
 	input := dto.RestCountryDTO{
-		Capital: []string{},
+		Capitals: []struct {
+			Name        string `json:"name"`
+			Primary     bool   `json:"primary"`
+			Coordinates struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			} `json:"coordinates"`
+		}{},
 	}
 
 	country := ToCountry(input)
@@ -50,10 +93,8 @@ func TestToCountryEmptyCapital(t *testing.T) {
 	assert.Equal(t, "", country.Capital)
 }
 
-func TestToCountryNoLatLng(t *testing.T) {
-	input := dto.RestCountryDTO{
-		LatLng: []float64{},
-	}
+func TestToCountryNoGeography(t *testing.T) {
+	input := dto.RestCountryDTO{}
 
 	country := ToCountry(input)
 

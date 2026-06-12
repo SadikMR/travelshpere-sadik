@@ -1,27 +1,48 @@
 package dto
 
-// RestCountryDTO represents a country response from the REST Countries API.
+// RestCountryDTO represents a country response from the REST Countries v5 API.
 type RestCountryDTO struct {
-	Flags struct {
-		PNG string `json:"png"`
-		SVG string `json:"svg"`
-	} `json:"flags"`
+	Flag struct {
+		Emoji  string `json:"emoji"`
+		URLPNG string `json:"url_png"`
+		URLSVG string `json:"url_svg"`
+	} `json:"flag"`
 
-	Flag string `json:"flag"`
+	Names struct {
+		Common   string `json:"common"`
+		Official string `json:"official"`
+	} `json:"names"`
 
-	Name struct {
-		Common string `json:"common"`
-	} `json:"name"`
-
-	Currencies map[string]struct {
-		Name string `json:"name"`
+	// CHANGED: From map[string]struct to a slice of structs
+	Currencies []struct {
+		Code   string `json:"code"`
+		Name   string `json:"name"`
+		Symbol string `json:"symbol"`
 	} `json:"currencies"`
 
-	Languages map[string]string `json:"languages"`
+	// CHANGED: From map[string]string to a slice of structs
+	Languages []struct {
+		BCP47  string `json:"bcp47"`
+		Name   string `json:"name"`
+		Native string `json:"native_name"` // Maps to "native_name" in the JSON
+	} `json:"languages"`
 
-	LatLng []float64 `json:"latlng"`
+	// Geography replaces the old 'latlng' array (currently missing from your provided JSON snippet, but keep if you use it later)
+	Geography struct {
+		Coordinates struct {
+			Lat float64 `json:"lat"`
+			Lng float64 `json:"lng"`
+		} `json:"coordinates"`
+	} `json:"geography"`
 
-	Capital []string `json:"capital"`
+	Capitals []struct {
+		Name        string `json:"name"`
+		Primary     bool   `json:"primary"`
+		Coordinates struct {
+			Lat float64 `json:"lat"`
+			Lng float64 `json:"lng"`
+		} `json:"coordinates"`
+	} `json:"capitals"`
 
 	Region string `json:"region"`
 

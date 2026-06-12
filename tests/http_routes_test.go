@@ -19,100 +19,100 @@ import (
 func newMockRemoteServer(t *testing.T) *httptest.Server {
 	countries := []map[string]any{
 		{
-			"flags":      map[string]any{"png": "https://example.com/bd.png", "svg": "https://example.com/bd.svg"},
-			"name":       map[string]any{"common": "Bangladesh"},
-			"currencies": map[string]any{"BDT": map[string]any{"name": "Taka"}},
-			"languages":  map[string]any{"ben": "Bengali"},
-			"latlng":     []float64{23.8, 90.4},
-			"capital":    []string{"Dhaka"},
+			"flag":       map[string]any{"emoji": "🇧🇩", "url_png": "https://example.com/bd.png", "url_svg": "https://example.com/bd.svg"},
+			"names":      map[string]any{"common": "Bangladesh", "official": "People's Republic of Bangladesh"},
+			"currencies": []map[string]any{{"code": "BDT", "name": "Taka", "symbol": "৳"}},
+			"languages":  []map[string]any{{"bcp47": "bn", "name": "Bengali", "native_name": "বাংলা"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 23.8, "lng": 90.4}},
+			"capitals":   []map[string]any{{"name": "Dhaka", "primary": true, "coordinates": map[string]any{"lat": 23.7104, "lng": 90.4074}}},
 			"region":     "Asia",
 			"subregion":  "Southern Asia",
 			"population": 170000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/fr.png", "svg": "https://example.com/fr.svg"},
-			"name":       map[string]any{"common": "France"},
-			"currencies": map[string]any{"EUR": map[string]any{"name": "Euro"}},
-			"languages":  map[string]any{"fra": "French"},
-			"latlng":     []float64{46.0, 2.0},
-			"capital":    []string{"Paris"},
+			"flag":       map[string]any{"emoji": "🇫🇷", "url_png": "https://example.com/fr.png", "url_svg": "https://example.com/fr.svg"},
+			"names":      map[string]any{"common": "France", "official": "French Republic"},
+			"currencies": []map[string]any{{"code": "EUR", "name": "Euro", "symbol": "€"}},
+			"languages":  []map[string]any{{"bcp47": "fr", "name": "French", "native_name": "Français"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 46.0, "lng": 2.0}},
+			"capitals":   []map[string]any{{"name": "Paris", "primary": true, "coordinates": map[string]any{"lat": 48.8566, "lng": 2.3522}}},
 			"region":     "Europe",
 			"subregion":  "Western Europe",
 			"population": 67000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/de.png", "svg": "https://example.com/de.svg"},
-			"name":       map[string]any{"common": "Germany"},
-			"currencies": map[string]any{"EUR": map[string]any{"name": "Euro"}},
-			"languages":  map[string]any{"deu": "German"},
-			"latlng":     []float64{51.0, 10.0},
-			"capital":    []string{"Berlin"},
+			"flag":       map[string]any{"emoji": "🇩🇪", "url_png": "https://example.com/de.png", "url_svg": "https://example.com/de.svg"},
+			"names":      map[string]any{"common": "Germany", "official": "Federal Republic of Germany"},
+			"currencies": []map[string]any{{"code": "EUR", "name": "Euro", "symbol": "€"}},
+			"languages":  []map[string]any{{"bcp47": "de", "name": "German", "native_name": "Deutsch"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 51.0, "lng": 10.0}},
+			"capitals":   []map[string]any{{"name": "Berlin", "primary": true, "coordinates": map[string]any{"lat": 52.52, "lng": 13.405}}},
 			"region":     "Europe",
 			"subregion":  "Western Europe",
 			"population": 83000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/au.png", "svg": "https://example.com/au.svg"},
-			"name":       map[string]any{"common": "Australia"},
-			"currencies": map[string]any{"AUD": map[string]any{"name": "Australian Dollar"}},
-			"languages":  map[string]any{"eng": "English"},
-			"latlng":     []float64{-25.0, 133.0},
-			"capital":    []string{"Canberra"},
+			"flag":       map[string]any{"emoji": "🇦🇺", "url_png": "https://example.com/au.png", "url_svg": "https://example.com/au.svg"},
+			"names":      map[string]any{"common": "Australia", "official": "Commonwealth of Australia"},
+			"currencies": []map[string]any{{"code": "AUD", "name": "Australian Dollar", "symbol": "$"}},
+			"languages":  []map[string]any{{"bcp47": "en", "name": "English", "native_name": "English"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": -25.0, "lng": 133.0}},
+			"capitals":   []map[string]any{{"name": "Canberra", "primary": true, "coordinates": map[string]any{"lat": -35.2809, "lng": 149.1300}}},
 			"region":     "Oceania",
 			"subregion":  "Australia and New Zealand",
 			"population": 25000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/jp.png", "svg": "https://example.com/jp.svg"},
-			"name":       map[string]any{"common": "Japan"},
-			"currencies": map[string]any{"JPY": map[string]any{"name": "Yen"}},
-			"languages":  map[string]any{"jpn": "Japanese"},
-			"latlng":     []float64{36.0, 138.0},
-			"capital":    []string{"Tokyo"},
+			"flag":       map[string]any{"emoji": "🇯🇵", "url_png": "https://example.com/jp.png", "url_svg": "https://example.com/jp.svg"},
+			"names":      map[string]any{"common": "Japan", "official": "Japan"},
+			"currencies": []map[string]any{{"code": "JPY", "name": "Yen", "symbol": "¥"}},
+			"languages":  []map[string]any{{"bcp47": "ja", "name": "Japanese", "native_name": "日本語"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 36.0, "lng": 138.0}},
+			"capitals":   []map[string]any{{"name": "Tokyo", "primary": true, "coordinates": map[string]any{"lat": 35.6762, "lng": 139.6503}}},
 			"region":     "Asia",
 			"subregion":  "Eastern Asia",
 			"population": 125000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/ca.png", "svg": "https://example.com/ca.svg"},
-			"name":       map[string]any{"common": "Canada"},
-			"currencies": map[string]any{"CAD": map[string]any{"name": "Canadian Dollar"}},
-			"languages":  map[string]any{"eng": "English", "fra": "French"},
-			"latlng":     []float64{56.0, -106.0},
-			"capital":    []string{"Ottawa"},
+			"flag":       map[string]any{"emoji": "🇨🇦", "url_png": "https://example.com/ca.png", "url_svg": "https://example.com/ca.svg"},
+			"names":      map[string]any{"common": "Canada", "official": "Canada"},
+			"currencies": []map[string]any{{"code": "CAD", "name": "Canadian Dollar", "symbol": "$"}},
+			"languages":  []map[string]any{{"bcp47": "en", "name": "English", "native_name": "English"}, {"bcp47": "fr", "name": "French", "native_name": "Français"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 56.0, "lng": -106.0}},
+			"capitals":   []map[string]any{{"name": "Ottawa", "primary": true, "coordinates": map[string]any{"lat": 45.4215, "lng": -75.6972}}},
 			"region":     "Americas",
 			"subregion":  "North America",
 			"population": 38000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/br.png", "svg": "https://example.com/br.svg"},
-			"name":       map[string]any{"common": "Brazil"},
-			"currencies": map[string]any{"BRL": map[string]any{"name": "Real"}},
-			"languages":  map[string]any{"por": "Portuguese"},
-			"latlng":     []float64{-10.0, -55.0},
-			"capital":    []string{"Brasília"},
+			"flag":       map[string]any{"emoji": "🇧🇷", "url_png": "https://example.com/br.png", "url_svg": "https://example.com/br.svg"},
+			"names":      map[string]any{"common": "Brazil", "official": "Federative Republic of Brazil"},
+			"currencies": []map[string]any{{"code": "BRL", "name": "Real", "symbol": "R$"}},
+			"languages":  []map[string]any{{"bcp47": "pt", "name": "Portuguese", "native_name": "Português"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": -10.0, "lng": -55.0}},
+			"capitals":   []map[string]any{{"name": "Brasília", "primary": true, "coordinates": map[string]any{"lat": -15.7975, "lng": -47.8919}}},
 			"region":     "Americas",
 			"subregion":  "South America",
 			"population": 211000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/in.png", "svg": "https://example.com/in.svg"},
-			"name":       map[string]any{"common": "India"},
-			"currencies": map[string]any{"INR": map[string]any{"name": "Rupee"}},
-			"languages":  map[string]any{"hin": "Hindi", "eng": "English"},
-			"latlng":     []float64{20.0, 77.0},
-			"capital":    []string{"New Delhi"},
+			"flag":       map[string]any{"emoji": "🇮🇳", "url_png": "https://example.com/in.png", "url_svg": "https://example.com/in.svg"},
+			"names":      map[string]any{"common": "India", "official": "Republic of India"},
+			"currencies": []map[string]any{{"code": "INR", "name": "Rupee", "symbol": "₹"}},
+			"languages":  []map[string]any{{"bcp47": "hi", "name": "Hindi", "native_name": "हिन्दी"}, {"bcp47": "en", "name": "English", "native_name": "English"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": 20.0, "lng": 77.0}},
+			"capitals":   []map[string]any{{"name": "New Delhi", "primary": true, "coordinates": map[string]any{"lat": 28.6139, "lng": 77.2090}}},
 			"region":     "Asia",
 			"subregion":  "Southern Asia",
 			"population": 1380000000,
 		},
 		{
-			"flags":      map[string]any{"png": "https://example.com/za.png", "svg": "https://example.com/za.svg"},
-			"name":       map[string]any{"common": "South Africa"},
-			"currencies": map[string]any{"ZAR": map[string]any{"name": "Rand"}},
-			"languages":  map[string]any{"eng": "English", "afr": "Afrikaans"},
-			"latlng":     []float64{-30.0, 25.0},
-			"capital":    []string{"Pretoria"},
+			"flag":       map[string]any{"emoji": "🇿🇦", "url_png": "https://example.com/za.png", "url_svg": "https://example.com/za.svg"},
+			"names":      map[string]any{"common": "South Africa", "official": "Republic of South Africa"},
+			"currencies": []map[string]any{{"code": "ZAR", "name": "Rand", "symbol": "R"}},
+			"languages":  []map[string]any{{"bcp47": "en", "name": "English", "native_name": "English"}, {"bcp47": "af", "name": "Afrikaans", "native_name": "Afrikaans"}},
+			"geography":  map[string]any{"coordinates": map[string]any{"lat": -30.0, "lng": 25.0}},
+			"capitals":   []map[string]any{{"name": "Pretoria", "primary": true, "coordinates": map[string]any{"lat": -25.7479, "lng": 28.2293}}},
 			"region":     "Africa",
 			"subregion":  "Southern Africa",
 			"population": 59000000,
@@ -186,13 +186,36 @@ func newMockRemoteServer(t *testing.T) *httptest.Server {
 	}
 
 	handler := http.NewServeMux()
-	handler.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
+	// v5 API: client hits baseURL directly with ?limit=&offset= params
+	handler.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Check if this is a /name path (for GetCountryByName)
+		if strings.HasPrefix(r.URL.Path, "/name") {
+			w.Header().Set("Content-Type", "application/json")
+			require.NoError(t, json.NewEncoder(w).Encode(map[string]any{
+				"data": map[string]any{"objects": countries},
+			}))
+			return
+		}
+		// Check if this is a /radius path (for attractions)
+		if strings.HasPrefix(r.URL.Path, "/radius") {
+			w.Header().Set("Content-Type", "application/json")
+			require.NoError(t, json.NewEncoder(w).Encode(attractions))
+			return
+		}
+		// Default: paginated countries endpoint
+		// Use offset param to determine pagination — offset 0 returns data, offset > 0 returns empty
 		w.Header().Set("Content-Type", "application/json")
-		require.NoError(t, json.NewEncoder(w).Encode(countries))
-	})
-	handler.HandleFunc("/radius", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		require.NoError(t, json.NewEncoder(w).Encode(attractions))
+		offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
+		if offset > 0 {
+			// Return empty to stop pagination loop
+			require.NoError(t, json.NewEncoder(w).Encode(map[string]any{
+				"data": map[string]any{"objects": []any{}},
+			}))
+			return
+		}
+		require.NoError(t, json.NewEncoder(w).Encode(map[string]any{
+			"data": map[string]any{"objects": countries},
+		}))
 	})
 
 	server := httptest.NewServer(handler)

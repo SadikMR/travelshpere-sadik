@@ -39,6 +39,8 @@
 
   <div id="country-results" class="ts-grid"></div>
 
+  <div id="pagination-controls" class="ts-pagination"></div>
+
 </div>
 
 <script>

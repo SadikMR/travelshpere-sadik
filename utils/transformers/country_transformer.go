@@ -5,34 +5,34 @@ import (
 	"github.com/SadikMR/travelshpere-sadik/models"
 )
 
-// ToCountry converts a REST Countries DTO into a Country model.
+// ToCountry converts a REST Countries v5 DTO into a Country model.
 func ToCountry(countryDTO dto.RestCountryDTO) models.Country {
 	country := models.Country{
-		Name:       countryDTO.Name.Common,
+		Name:       countryDTO.Names.Common,
 		Region:     countryDTO.Region,
 		SubRegion:  countryDTO.SubRegion,
 		Population: countryDTO.Population,
-		Flag:       countryDTO.Flags.PNG,
+		Flag:       countryDTO.Flag.URLPNG,
 	}
 
-	if len(countryDTO.Capital) > 0 {
-		country.Capital = countryDTO.Capital[0]
+	if len(countryDTO.Capitals) > 0 {
+		country.Capital = countryDTO.Capitals[0].Name
 	}
 
-	if len(countryDTO.LatLng) >= 2 {
-		country.Latitude = countryDTO.LatLng[0]
-		country.Longitude = countryDTO.LatLng[1]
+	// Set coordinates from geography data
+	country.Latitude = countryDTO.Geography.Coordinates.Lat
+	country.Longitude = countryDTO.Geography.Coordinates.Lng
+
+	// CHANGED: Grab the first currency name from the array
+	if len(countryDTO.Currencies) > 0 {
+		country.Currency = countryDTO.Currencies[0].Name
 	}
 
-	for _, currency := range countryDTO.Currencies {
-		country.Currency = currency.Name
-		break
-	}
-
+	// CHANGED: Loop over the languages array and append the string name
 	for _, language := range countryDTO.Languages {
 		country.Languages = append(
 			country.Languages,
-			language,
+			language.Name,
 		)
 	}
 

@@ -12,25 +12,39 @@ import (
 )
 
 func TestGetCountriesSuccess(t *testing.T) {
+	callCount := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"name": map[string]string{"common": "Bangladesh"}, "region": "Asia"},
+		callCount++
+		if callCount > 1 {
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"data": map[string]interface{}{"objects": []interface{}{}},
+			})
+			return
+		}
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": map[string]interface{}{
+				"objects": []map[string]interface{}{
+					{"names": map[string]string{"common": "Bangladesh"}, "region": "Asia"},
+				},
+			},
 		})
 	}))
 	defer server.Close()
 
 	beego.AppConfig.Set("restcountriesBaseURL", server.URL)
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	countries, err := GetCountries()
 
 	require.NoError(t, err)
 	assert.Len(t, countries, 1)
-	assert.Equal(t, "Bangladesh", countries[0].Name.Common)
+	assert.Equal(t, "Bangladesh", countries[0].Names.Common)
 }
 
 func TestGetCountriesHTTPError(t *testing.T) {
 	beego.AppConfig.Set("restcountriesBaseURL", "http://localhost:1")
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	_, err := GetCountries()
 
@@ -44,6 +58,7 @@ func TestGetCountriesInvalidJSON(t *testing.T) {
 	defer server.Close()
 
 	beego.AppConfig.Set("restcountriesBaseURL", server.URL)
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	_, err := GetCountries()
 
@@ -53,22 +68,29 @@ func TestGetCountriesInvalidJSON(t *testing.T) {
 func TestGetCountryByNameSuccess(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode([]map[string]interface{}{
-			{"name": map[string]string{"common": "Japan"}, "region": "Asia"},
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"data": map[string]interface{}{
+				"objects": []map[string]interface{}{
+					{"names": map[string]string{"common": "Japan"}, "region": "Asia"},
+				},
+			},
 		})
 	}))
 	defer server.Close()
 
 	beego.AppConfig.Set("restcountriesBaseURL", server.URL)
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	countries, err := GetCountryByName("Japan")
 
 	require.NoError(t, err)
 	assert.Len(t, countries, 1)
+	assert.Equal(t, "Japan", countries[0].Names.Common)
 }
 
 func TestGetCountryByNameHTTPError(t *testing.T) {
 	beego.AppConfig.Set("restcountriesBaseURL", "http://localhost:1")
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	_, err := GetCountryByName("Japan")
 
@@ -82,6 +104,7 @@ func TestGetCountryByNameInvalidJSON(t *testing.T) {
 	defer server.Close()
 
 	beego.AppConfig.Set("restcountriesBaseURL", server.URL)
+	beego.AppConfig.Set("restcountriesAPIKey", "test_key_123")
 
 	_, err := GetCountryByName("Japan")
 

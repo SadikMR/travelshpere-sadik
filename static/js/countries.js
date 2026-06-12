@@ -6,8 +6,14 @@
   const regionSelect = document.getElementById("region-select");
   const resultCount  = document.getElementById("result-count");
   const suggestions  = document.getElementById("search-suggestions");
+  const paginationEl = document.getElementById("pagination-controls");
 
   let allCountries = window.__COUNTRIES__ || [];
+
+  // ── Pagination state ────────────────────────────────
+  const PER_PAGE = 12;
+  let currentPage = 1;
+  let currentList = allCountries;
 
   // ── Autocomplete state ───────────────────────────────
   let acTimer    = null;
@@ -75,12 +81,104 @@
       </a>`;
   }
 
-  // ── Render grid ───────────────────────────────────────
-  function render(list) {
-    grid.innerHTML = list.length
-      ? list.map(buildCard).join("")
+  // ── Pagination helpers ──────────────────────────────
+  function totalPages(list) {
+    return Math.max(1, Math.ceil(list.length / PER_PAGE));
+  }
+
+  function getPageSlice(list, page) {
+    const start = (page - 1) * PER_PAGE;
+    return list.slice(start, start + PER_PAGE);
+  }
+
+  function renderPagination(list) {
+    if (!paginationEl) return;
+    const total = totalPages(list);
+    if (total <= 1) {
+      paginationEl.innerHTML = "";
+      return;
+    }
+
+    let html = "";
+
+    // Prev button
+    html += `<button class="ts-page-btn${currentPage === 1 ? " disabled" : ""}" data-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Prev
+    </button>`;
+
+    // Page numbers
+    const pages = buildPageNumbers(currentPage, total);
+    pages.forEach((p) => {
+      if (p === "…") {
+        html += `<span class="ts-page-ellipsis">…</span>`;
+      } else {
+        html += `<button class="ts-page-num${p === currentPage ? " active" : ""}" data-page="${p}">${p}</button>`;
+      }
+    });
+
+    // Next button
+    html += `<button class="ts-page-btn${currentPage === total ? " disabled" : ""}" data-page="${currentPage + 1}" ${currentPage === total ? "disabled" : ""}>
+      Next
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>`;
+
+    paginationEl.innerHTML = html;
+
+    // Bind click handlers
+    paginationEl.querySelectorAll("[data-page]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const p = parseInt(btn.dataset.page, 10);
+        if (p >= 1 && p <= total && p !== currentPage) {
+          currentPage = p;
+          renderPage(currentList);
+          // Smooth scroll to top of grid
+          grid.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  }
+
+  // Build a smart page number array like [1, 2, "…", 5, 6, 7, "…", 10]
+  function buildPageNumbers(current, total) {
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = new Set([1, 2, total - 1, total]);
+    for (let i = current - 1; i <= current + 1; i++) {
+      if (i >= 1 && i <= total) pages.add(i);
+    }
+    const sorted = [...pages].sort((a, b) => a - b);
+    const result = [];
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push("…");
+      result.push(sorted[i]);
+    }
+    return result;
+  }
+
+  // ── Render grid + pagination ────────────────────────
+  function renderPage(list) {
+    const pageItems = getPageSlice(list, currentPage);
+    grid.innerHTML = pageItems.length
+      ? pageItems.map(buildCard).join("")
       : `<div class="ts-empty">No countries match your search.</div>`;
-    resultCount.innerHTML = `Showing <strong>${list.length}</strong> countries`;
+
+    const start = (currentPage - 1) * PER_PAGE + 1;
+    const end = Math.min(currentPage * PER_PAGE, list.length);
+    if (list.length > 0) {
+      resultCount.innerHTML = `Showing <strong>${start}–${end}</strong> of <strong>${list.length}</strong> countries`;
+    } else {
+      resultCount.innerHTML = `Showing <strong>0</strong> countries`;
+    }
+
+    renderPagination(list);
+  }
+
+  function render(list) {
+    currentList = list;
+    currentPage = 1;
+    renderPage(list);
   }
 
   // ── AJAX grid filter ──────────────────────────────────
@@ -92,6 +190,7 @@
     if (region) params.set("region", region);
 
     grid.innerHTML = `<div class="ts-empty" style="color:#aaa;">Loading…</div>`;
+    if (paginationEl) paginationEl.innerHTML = "";
 
     fetch("/api/countries?" + params.toString())
       .then((r) => { if (!r.ok) throw new Error("API error"); return r.json(); })
