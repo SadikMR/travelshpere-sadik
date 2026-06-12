@@ -19,9 +19,14 @@ func ToCountry(countryDTO dto.RestCountryDTO) models.Country {
 		country.Capital = countryDTO.Capitals[0].Name
 	}
 
-	// Set coordinates from geography data
-	country.Latitude = countryDTO.Geography.Coordinates.Lat
-	country.Longitude = countryDTO.Geography.Coordinates.Lng
+	// Set coordinates from geography data; if unavailable, fall back to capital coordinates.
+	if countryDTO.Geography.Coordinates.Lat != 0 || countryDTO.Geography.Coordinates.Lng != 0 {
+		country.Latitude = countryDTO.Geography.Coordinates.Lat
+		country.Longitude = countryDTO.Geography.Coordinates.Lng
+	} else if len(countryDTO.Capitals) > 0 {
+		country.Latitude = countryDTO.Capitals[0].Coordinates.Lat
+		country.Longitude = countryDTO.Capitals[0].Coordinates.Lng
+	}
 
 	// CHANGED: Grab the first currency name from the array
 	if len(countryDTO.Currencies) > 0 {

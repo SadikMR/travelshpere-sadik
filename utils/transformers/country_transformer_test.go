@@ -93,6 +93,29 @@ func TestToCountryEmptyCapital(t *testing.T) {
 	assert.Equal(t, "", country.Capital)
 }
 
+func TestToCountryFallbackCoordinatesFromCapital(t *testing.T) {
+	input := dto.RestCountryDTO{
+		Capitals: []struct {
+			Name        string `json:"name"`
+			Primary     bool   `json:"primary"`
+			Coordinates struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			} `json:"coordinates"`
+		}{
+			{Name: "Test City", Primary: true, Coordinates: struct {
+				Lat float64 `json:"lat"`
+				Lng float64 `json:"lng"`
+			}{Lat: 12.34, Lng: 56.78}},
+		},
+	}
+
+	country := ToCountry(input)
+
+	assert.Equal(t, 12.34, country.Latitude)
+	assert.Equal(t, 56.78, country.Longitude)
+}
+
 func TestToCountryNoGeography(t *testing.T) {
 	input := dto.RestCountryDTO{}
 
